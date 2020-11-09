@@ -13,7 +13,7 @@ library(here)
 
 # Functions for Save DataTable ---------------------------------------------------------------
 
-fileName <- treeName #sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
+fileName <- 'treeName' #sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
 
 # readSettings <- function(){
 #     if (file.exists(setfname)){
