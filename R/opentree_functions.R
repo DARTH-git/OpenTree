@@ -1,7 +1,7 @@
 # OpenTree functions
 
 if (!require('pacman')) install.packages('pacman'); library(pacman)
-p_load("tidyverse", "jsonlite", "jsonlite")
+p_load("tidyverse", "jsonlite", "rstudioapi")
 
 runOpenTreeUI <- function(){
   #Run shiny app in the background
