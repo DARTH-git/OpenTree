@@ -23,7 +23,7 @@ fileName <- 'treeName' #sprintf("%s_%s.csv", as.integer(Sys.time()), digest::dig
 
 # UI ----------------------------------------------------------------------
 
-ui <- htmlTemplate(here("www", "OpenTree.html")),
+ui <- htmlTemplate(here("www", "OpenTree.html"),
         #text_input = textInput("fname","File name: ",value="OpenTree.csv"),
         #verb_output = verbatimTextOutput("text"),
         #btn1_checker = actionButton("chck1_file", "Check for file"),
