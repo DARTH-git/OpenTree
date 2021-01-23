@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+author: "Alan Yang"
+date: "1/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a documesnt will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+*TASK: Viewer pane instead of window*
+
+```{r,}
+library(tidyverse)
+# remove.packages("OpenTree")
+devtools::install_github("DARTH-git/OpenTree")
+library(OpenTree)
+# Get OpenTree library path
+OpenTree.libpath <- as.data.frame(installed.packages()) %>% 
+                    filter(Package == "OpenTree") %>%
+                    select(LibPath) %>%
+                    pull()
+createTree(fileName = "Helloworld", dirname = getwd(), libpath = OpenTree.libpath)
+```
+
