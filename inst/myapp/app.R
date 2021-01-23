@@ -1,19 +1,23 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+##************************************************************************
+## Script Name: App Instance for createTree(fileName) function
+## Purpose:
+##
+##
+## Created: 2021-01-18
+## Authors:
+##
+## GitHub: marianafdz465
+##
+##
+##************************************************************************
 
 library(shiny)
-library(here)
+library(OpenTree)
+library(rstudioapi)
 
 
-# Functions for Save DataTable ---------------------------------------------------------------
 
-fileName <- treeName #sprintf("%s_%s.csv", as.integer(Sys.time()), digest::digest(data))
+# Test --------------------------------------------------------------------
 
 # readSettings <- function(){
 #     if (file.exists(setfname)){
@@ -23,7 +27,7 @@ fileName <- treeName #sprintf("%s_%s.csv", as.integer(Sys.time()), digest::diges
 
 # UI ----------------------------------------------------------------------
 
-ui <- htmlTemplate(here("www", "OpenTree.html"),
+ui <- htmlTemplate("www/OpenTree.html",
         #text_input = textInput("fname","File name: ",value="OpenTree.csv"),
         #verb_output = verbatimTextOutput("text"),
         #btn1_checker = actionButton("chck1_file", "Check for file"),
@@ -40,7 +44,15 @@ ui <- htmlTemplate(here("www", "OpenTree.html"),
 
 # Server ------------------------------------------------------------------
 
-server = function(input, output, session){
+server <-  function(input, output, session){
+    wd <- getOption("wd")
+    #path_file <- file.path(wd, paste0(fileName, ".json"))
+
+    # First Message
+    message <- paste0("OpenTree will save your changes to the tree structure in real-time to ", path_file)
+
+    # send the message to the event handler with name handler1 if we press the action button
+    session$sendCustomMessage("handler1", message)
 
     # This block fires each time we receive a message from JavaScript
     output$table2 <- renderTable({
@@ -57,11 +69,11 @@ server = function(input, output, session){
 
 
         #Write json file
-
-        #print("JSON LLAMADA")
         json_value = input$jsonData
         #write(json_value, paste0("reactiveObjects/OpenTree_",fileName, ".json"))
-        write(json_value, paste0("OpenTree_",fileName, ".json"))
+
+        #write(json_value, file.path(wd, paste0(fileName, ".json")))
+        write(json_value, path_file)
 
     })
 
@@ -71,7 +83,4 @@ server = function(input, output, session){
 
 # Run the application
 shinyApp(ui , server)
-
-
-
 

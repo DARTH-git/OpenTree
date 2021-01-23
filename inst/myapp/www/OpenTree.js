@@ -4,7 +4,7 @@ var width = 700,
 	height = 500;
 
 var depth;
-var numTerminal; 
+var numTerminal;
 
 var multiplier = 1.5; // for spacing between tree's branches
 
@@ -32,14 +32,14 @@ var nodeToCopy;
 var blank = 1; //load the blank tree first
 
 function getShape(type) {
-	
+
 	if(type=="chance" || type=="markov") {
 		return "circle";
 	} else if (type == "decision") {
 		return "square";
 	} else if (type=="terminal"){
 		return "triangle-up";
-	} 
+	}
 }
 
 function getColor(type) {
@@ -76,21 +76,21 @@ function getBlankTree() {
 
 function addShortProps(match, proptext, probability, delimit) {
 	var shortprop = probability;
-	
-	if(probability.length > 15) 
+
+	if(probability.length > 15)
 		shortprop = probability.substring(0,15) + "...\"";
-	
+
 	var fulltext = "\n\"probability_short\": "+shortprop+",\n"+proptext+probability + delimit;
 	return fulltext;
 }
 
 function getUserJSON() {
 	var json = document.getElementById('userJSONtext').value;
-	
+
 	var newjson = json.replace(/("probability":)(.+?)([,\n])/g, addShortProps);
-	
+
 	var outerjson = "{\"name\":\"\",\n\"type\":\"root\",\n\"probability\":\"\",\n\"variables\":\"\",\n\"payoff\":\"\",\n\"children\":[" + newjson + "]}";
-	
+
 	try {
 		var jsonobj = JSON.parse(outerjson);
 		return jsonobj;
@@ -106,14 +106,14 @@ function validateJSON() {
 	var outerjson = "{\"name\":\"\",\n\"type\":\"root\",\n\"probability\":\"\",\n\"variables\":\"\",\n\"payoff\":\"\",\n\"children\":[" + json + "]}";
 	try {
 		var jsonobj = JSON.parse(outerjson);
-		
+
 		return true;
 	} catch (e) {
 		errormsg = e;
 		return false;
 	}
-} 
-    
+}
+
 function getData(blank) {
 	if (blank == 1) {
 		return getBlankTree();
@@ -124,7 +124,7 @@ function getData(blank) {
 
 function copyBranch() {
 	var selection = d3.select(".node.selected")[0][0];
-	
+
 	if(selection) {
 	  nodeToCopy = selection.__data__;
 	} else {
@@ -133,10 +133,10 @@ function copyBranch() {
 }
 
 var copyChildren = function(d,nodeid) {
-	
+
 	var selection = d3.select("#" + nodeid);
 	var data = selection[0][0].__data__;
-	var dir = 'right'; 
+	var dir = 'right';
 	var name = d.name;
 	var props = d.probability;
 	var pay = d.payoff;
@@ -146,14 +146,14 @@ var copyChildren = function(d,nodeid) {
 	var oldid = d.id;
 	var nodeid = "";
 	numnodes++;
-	
+
 	var previd;
-	
+
 	if (data.children || data._children) {
 		if (data.children.length > 0) {
-		
+
 			previd = data.children[data.children.length-1].id;
-			
+
 			var prev = previd.split("_");
 			var i = 0;
 			for (i; i < prev.length-1; i++) {
@@ -165,23 +165,23 @@ var copyChildren = function(d,nodeid) {
 	} else {
 		nodeid = data.id + "_1";
 	}
-	
+
 	if (d.id == d.name) {
 		name = nodeid;
 	}
-	
+
 	var cl = data[dir] || data.children || data._children;
-	
+
 	if(!cl) {
 		cl = data.children = [];
 	}
-	
+
 	cl.push({name: name, probability_short: short_props, probability: props, variables: vars, payoff: pay, position: dir, type: nodeType, id:nodeid});
-	
+
 	update(1);
-	
+
 	if (d.children || d._children) {
-		
+
 		d.children.forEach(function (d) {
 			copyChildren(d,nodeid);
 		});
@@ -190,27 +190,27 @@ var copyChildren = function(d,nodeid) {
 
 
 function pasteBranch() {
-	
+
 	var selection = d3.select(".node.selected")[0][0];
 	var selectedid = d3.select(".node.selected")[0][0].__data__.id; // id of node we will paste to
-	
+
 	if (selection) {
-		
+
 		var data = selection.__data__;
-		
+
 		if (nodeToCopy.children) {
 			var pasteid = data.id;
-			
+
 			if (pasteid.match("^" + nodeToCopy.id)) {
 				alert("Recursive copy is not permitted.");
 				return;
 			} else {
 				nodeToCopy.children.forEach(function (d) {
-					
+
 					copyChildren(d,selectedid);
 				});
 			}
-		} 
+		}
 		update(1);
 	}
 	nodeToCopy = null;
@@ -218,7 +218,7 @@ function pasteBranch() {
 
 /*
  * Get depth of tree (or branch)
- */ 
+ */
 var getDepth = function (obj) {
 	var tdepth = 0;
 	if (obj.children) {
@@ -290,7 +290,7 @@ var node = svg.selectAll(".node")
 	})
 	.attr("id",function(d) { numnodes++; return d.id; })
 	.on("click", function (d) { select(this); })
-	.on("dblclick", function (d) { 
+	.on("dblclick", function (d) {
 		div.transition()
 			.duration(100)
 			.style("opacity", 0);
@@ -301,11 +301,11 @@ var node = svg.selectAll(".node")
 			div.transition()
 				.duration(100)
 				.style("opacity", opac);
-			
+
 			div.html(
-				"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" + 
+				"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
 				"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
-				(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>")) 
+				(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 			)
 			.style("left", (d3.event.pageX - ttw-15) + "px")
 			.style("width",(ttw) + "px")
@@ -327,7 +327,7 @@ node.append("path")
 	)
 	.attr("transform", "rotate(270)")
 	.style("stroke", function(d){ return getColor(d.type);})
-	.style("stroke-width","2.5"); 
+	.style("stroke-width","2.5");
 
 node.append("text")
 	.attr("dx", -10)
@@ -378,29 +378,29 @@ for (i = 0; i < nodebuttons.length; i++) {
 }
 
 var select = function(node){
-	
+
 	// Find previously selected, unselect
 	d3.select(".selected>circle").style("fill", "white");
 	d3.select(".selected").classed("selected", false);
-	
+
 	// Select current item
 	d3.select(node).classed("selected", true);
-	
+
 	var selection = d3.select(".node.selected")[0][0];
-	
+
 	d3.select(".node.selected>circle").style("fill","orange");
-	
+
 	if (selection) {
 		var data = selection.__data__;
 		txtNodeName.value = data.name;
 		nodeProbability.value = data.probability;
 		nodePayoff.value = data.payoff;
 		nodeVariables.value = data.variables;
-		
+
 		var nodebuttons = document.getElementsByName('radNodeType');
-		
+
 		for (i = 0; i < nodebuttons.length; i++) {
-			
+
 			if (nodebuttons[i].value == data.type) {
 				nodebuttons[i].checked = true;
 			} else {
@@ -412,22 +412,22 @@ var select = function(node){
 
 /*
  * Insert new node
- */ 
+ */
 function insertNode (){
-	
+
 	var selection = d3.select(".node.selected")[0][0];
-	
+
 	if (selection) {
 		var data = selection.__data__;
-		var dir = 'right'; 
+		var dir = 'right';
 		var name = "";
-		
+
 		var props = "";
 		var pay = "";
 		var vars = "";
 		var nodeType = "chance";
 		var addlevel = 2; // add height
-		
+
 		var cl = data[dir] || data.children || data._children;
 		var nodeid = "";
 		if(!cl){
@@ -437,22 +437,22 @@ function insertNode (){
 		} else {
 			var previd = data.children[data.children.length-1].id;
 			var prev = previd.split("_");
-			
-			for (i=0; i<prev.length-1; i++) 
+
+			for (i=0; i<prev.length-1; i++)
 				nodeid += prev[i] + "_";
 			var newnum = parseInt(prev[i]) + 1;
-			
+
 			nodeid += newnum
 		}
 		var short_props = props.replace(/\n/gi,";");
-		if (props.length > 15) { 
+		if (props.length > 15) {
 			short_props = props.substring(0,16).replace(/\n/gi,";") + "..." ;
 		}
-		
+
 		numnodes++;
 		name = nodeid;
 		cl.push({id: nodeid, name: name, probability_short: short_props, probability: props, variables: vars, payoff: pay, position: dir, type: nodeType, id:nodeid});
-		
+
 		update(addlevel);
 	}
 	console.log("Me estoy ejecutando Insertando");
@@ -467,7 +467,7 @@ function insertNode (){
 /*
  * Bind insert and ctrl-n keys to Insert new node
  */
-Mousetrap.bind(['ins','ctrl+n'], function() { 
+Mousetrap.bind(['ins','ctrl+n'], function() {
 	insertNode();
 });
 
@@ -490,7 +490,7 @@ function deleteBranch() {
 		}
 		var i = 0, l = cl.length;
 		var childrentext = "";
-		
+
 		if(data.children) {
 			numnodes = numnodes - data.children - 1;
 			childrentext = " and all of its children";
@@ -511,7 +511,7 @@ function deleteBranch() {
 	console.log("Me estoy ejecutando eliminando json");
 	Shiny.setInputValue("jsonData", download());
 
-	
+
 }
 
 /*
@@ -529,30 +529,30 @@ function update(addlevel) {
 
 	// remember which node was selected, so we can reselect it after we redraw the updated tree
 	var selectedid = d3.select(".node.selected")[0][0].__data__.id;
-	
+
 	depth = getDepth(root);
 	width = 150 + (120 * depth );
 	numTerminal = treeCount(root);
 	height = 20 + (30 * numTerminal);
-	
+
 	d3.select("svg").remove();
-	
+
 	tree = d3.layout.tree()
 		.size([height, width - 160]);
-	
+
 	cluster = d3.layout.cluster()
 		.size([height, width - 160]);
-	
+
 	svg = d3.select("body #treeDiv").append("svg")
 		.attr("id","canvas")
 		.attr("width", width)
 		.attr("height", height*multiplier)
 		.append("g")
 		.attr("transform", "translate(40,0)");
-	
+
 	nodes = cluster.nodes(root),
 		links = cluster.links(nodes);
-	
+
 	link = svg.selectAll(".link")
 		.data(links)
 		.enter()
@@ -560,7 +560,7 @@ function update(addlevel) {
 		.attr("class", "link")
 		.style("stroke", "#8da0cb")
 		.attr("d", elbow);
-	
+
 	node = svg.selectAll(".node")
 		.data(nodes)
 		.enter()
@@ -570,19 +570,19 @@ function update(addlevel) {
 			return "translate(" + d.y + "," + d.x*multiplier + ")";
 		})
 		.attr("id",function (d) { return d.id;} )
-		.on("click", function (d) { 
+		.on("click", function (d) {
 			select(this);
 			console.log(this.x);
-			
+
 			//Flag
 			console.log("Me estoy ejecutando div");
 			Shiny.setInputValue("jsValue", printCSV());
 			console.log("Me estoy ejecutando div json");
 	    Shiny.setInputValue("jsonData", download());
-				
+
 
 		})
-		.on("dblclick", function (d) { 
+		.on("dblclick", function (d) {
 			div.transition()
 				.duration(100)
 				.style("opacity", 0);
@@ -596,11 +596,11 @@ function update(addlevel) {
 				div.transition()
 					.duration(100)
 					.style("opacity", opac);
-				
+
 				div.html(
-					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" + 
+					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
 					"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
-					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>")) 
+					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 				)
 				.style("left", (d3.event.pageX - ttw-15) + "px")
 				.style("width",(ttw) + "px")
@@ -614,7 +614,7 @@ function update(addlevel) {
 				.style("opacity", 0);
 			hoverhide();
 		});
-	
+
 	node.append("path")
 		.attr("d", d3.svg.symbol()
 			.size(150)
@@ -622,8 +622,8 @@ function update(addlevel) {
 		)
 		.attr("transform", "rotate(270)")
 		.style("stroke", function(d){ return getColor(d.type);})
-		.style("stroke-width","2.5"); 
-	
+		.style("stroke-width","2.5");
+
 	node.append("text")
 		.attr("dx", -10)
 		.attr("dy", -5)
@@ -631,7 +631,7 @@ function update(addlevel) {
 		.text(function (d) { return d.name; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-	
+
 	node.append("text")
 		.attr("dx", -13)
 		.attr("dy", 10)
@@ -639,8 +639,8 @@ function update(addlevel) {
 		.text(function (d) { return d.probability_short; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-		
-	
+
+
 	node.append("text")
 		.attr("dx", 15)
 		.attr("dy", 2)
@@ -648,30 +648,30 @@ function update(addlevel) {
 		.text(function (d) { return d.children ? "" : d.payoff; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-	
+
 	// add the tooltip
 	var div = d3.select("body").append("div")
 		.attr("class", "tooltip")
 		.style("opacity", 0);
-	
+
 	// reselect the selected node
 	// Select current item
 	var selection = d3.select("#" + selectedid);
 	selection.classed("selected", true);
-	
+
 	d3.select(".node.selected>circle").style("fill","orange");
-	
+
 	if(selection[0][0]) {
 		var data = selection[0][0].__data__;
 		txtNodeName.value = data.name;
 		nodeProbability.value = data.probability;
 		nodePayoff.value = data.payoff;
 		nodeVariables.value = data.variables;
-		
+
 		var nodebuttons = document.getElementsByName('radNodeType');
-		
+
 		for (i = 0; i < nodebuttons.length; i++) {
-		
+
 			if (nodebuttons[i].value == data.type) {
 				nodebuttons[i].checked = true;
 			} else {
@@ -679,7 +679,7 @@ function update(addlevel) {
 			}
 		}
 	}
-	//FLAG 
+	//FLAG
 
 }
 
@@ -688,52 +688,52 @@ function update(addlevel) {
  * blank == 0 means not blank, blank == 1 means blank
  */
 function load(blank) {
-	
+
 	if (blank == 1) {
 		// make the "are you sure you want to leave the page?" popup appear if the current tree isn't empty
 		if (!areYouSure() ) {
 			return;
 		}
 	}
-	
+
 	if(blank == 2) {
 		if(validateJSON() == false) {
 			document.getElementById('errormessages').innerHTML = errormsg;
 			return;
 		}
 	}
-	
+
 	document.getElementById('errormessages').innerHTML = "";
-	
+
 	document.getElementById('userJSONdiv').style.display='none'; // this hidden div is used to load the user's JSON file
-	
+
 	numnodes = 0;
-	
+
 	tmprt = getData(blank);
 	depth = getDepth(tmprt);
 	width = 150 + (120 * depth);
 	numTerminal = treeCount(tmprt);
 	height = 20 + (30 * numTerminal);
-	
+
 	tree = d3.layout.tree()
 	 	.size([height, width - 160]);
-	
+
 	cluster = d3.layout.cluster()
 		.size([height, width - 160]);
-	
+
 	root = getData(blank),
 		nodes = cluster.nodes(root),
 		links = cluster.links(nodes);
-	
+
 	d3.select("svg").remove();
-	
+
 	svg = d3.select("body #treeDiv").append("svg")
 		.attr("id","canvas")
 		.attr("width", width)
 		.attr("height", height*multiplier)
 		.append("g")
 		.attr("transform", "translate(40,0)");
-	
+
 	link = svg.selectAll(".link")
 		.data(links)
 		.enter()
@@ -741,7 +741,7 @@ function load(blank) {
 		.attr("class", "link")
 		.style("stroke", "#8da0cb")
 		.attr("d", elbow);
-	
+
 	node = svg.selectAll(".node")
 		.data(nodes)
 		.enter()
@@ -751,10 +751,10 @@ function load(blank) {
 			return "translate(" + d.y + "," + d.x*multiplier + ")";
 		})
 		.attr("id",function(d) { numnodes++; return d.id; })
-		.on("click", function (d) { 
+		.on("click", function (d) {
 			select(this);
 			console.log(this.x) })
-		.on("dblclick", function (d) { 
+		.on("dblclick", function (d) {
 		 	div.transition()
 				.duration(100)
 				.style("opacity", 0);
@@ -765,11 +765,11 @@ function load(blank) {
 				div.transition()
 					.duration(100)
 					.style("opacity", opac);
-				
+
 				div.html(
-					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" + 
+					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
 					"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
-					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>")) 
+					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 				)
 				.style("left", (d3.event.pageX - ttw-15) + "px")
 				.style("width",(ttw) + "px")
@@ -783,7 +783,7 @@ function load(blank) {
 				.style("opacity", 0);
 			hoverhide();
 		});
-	
+
 	node.append("path")
 		.attr("d", d3.svg.symbol()
 			.size(150)
@@ -791,8 +791,8 @@ function load(blank) {
 		)
 		.attr("transform", "rotate(270)")
 		.style("stroke", function(d){ return getColor(d.type);})
-		.style("stroke-width","2.5"); 
-	
+		.style("stroke-width","2.5");
+
 	node.append("text")
 		.attr("dx", -10)
 		.attr("dy", -5)
@@ -800,7 +800,7 @@ function load(blank) {
 		.text(function (d) { return d.name; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-	
+
 	node.append("text")
 		.attr("dx", -13)
 		.attr("dy", 10)
@@ -808,7 +808,7 @@ function load(blank) {
 		.text(function (d) { return d.probability_short; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-	
+
 	node.append("text")
 		.attr("dx", 15)
 		.attr("dy", 2)
@@ -816,15 +816,15 @@ function load(blank) {
 		.text(function (d) { return d.children ? "" : d.payoff; })
 		.on("mouseover", function (d) { return hovershow(d);})
 		.on("mouseout", function (d) { return hoverhide();});
-	
+
 	// add the tooltip
 	var div = d3.select("body").append("div")
 		.attr("class", "tooltip")
 		.style("opacity", 0);
-	
+
 	// select the root node
 	var tmprt = d3.select("#node1").classed("selected",true);
-	
+
 	txtNodeName.value = tmprt[0][0].__data__.name;
 	nodeProbability.value = tmprt[0][0].__data__.probability;
 	nodePayoff.value = tmprt[0][0].__data__.payoff;
@@ -837,7 +837,7 @@ function load(blank) {
 			nodebuttons[i].checked = false;
 		}
 	}
-	// Flag 
+	// Flag
   //var modroot = cloneForJSON(root.children[0]); // clone the elements of root & its children that we need for json string
 	//var jsonstring = JSON.stringify(modroot);
 //
@@ -859,13 +859,13 @@ var handleClick = function(d, index){
  * Show tooltip on hover
  */
 var hovershow = function(d) {
-	
+
 	txtNodeName.value = d.name;
 	nodeProbability.value = d.probability;
 	nodePayoff.value = d.payoff;
 	nodeVariables.value = d.variables;
 	var nodebuttons = document.getElementsByName('radNodeType');
-	for (i = 0; i < nodebuttons.length; i++) {	
+	for (i = 0; i < nodebuttons.length; i++) {
 		if (nodebuttons[i].value == d.type) {
 			nodebuttons[i].checked = true;
 		} else {
@@ -885,7 +885,7 @@ var hoverhide = function() {
 	nodePayoff.value = snode.payoff;
 	nodeVariables.value = snode.variables;
 	var nodebuttons = document.getElementsByName('radNodeType');
-	for (i = 0; i < nodebuttons.length; i++) {	
+	for (i = 0; i < nodebuttons.length; i++) {
 		if (nodebuttons[i].value == snode.type) {
 			nodebuttons[i].checked = true;
 		} else {
@@ -946,7 +946,7 @@ function decreaseTTW() {
  */
 function cloneForJSON(r) {
 	var copyobj = {id: r["id"], name: r["name"], type: r["type"], probability: r["probability"], variables: r["variables"], payoff: r["payoff"]};
-	
+
 	if(r.children || r._children) {
 		copyobj.children = [];
 		var counter = 0;
@@ -959,9 +959,9 @@ function cloneForJSON(r) {
 
 /*
  * recursive function to clone the children, just the stuff we need for json string
- */ 
+ */
 function cloneChildrenForJSON(copyobj, r, counter) {
-	
+
 	copyobj.push({id: r.id, name: r.name, type: r.type, probability: r.probability, variables: r.variables, payoff: r.payoff});
 	if(r.children || r._children) {
 		copyobj[counter].children = [];
@@ -978,16 +978,16 @@ function cloneChildrenForJSON(copyobj, r, counter) {
  * To do: make filename editable
  */
 function download() {
-	
+
 	var modroot = cloneForJSON(root.children[0]); // clone the elements of root & its children that we need for json string
 	var jsonstring = JSON.stringify(modroot);
-	
+
 	var element = document.createElement('a');
 	element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonstring));
 	element.setAttribute('download', "tree.json");
 	element.style.display = 'none';
 	document.body.appendChild(element);
-	
+
 	//element.click();
 	document.body.removeChild(element);
 	//Flag
@@ -1001,16 +1001,16 @@ function download() {
  * To do: make filename editable
  */
 function download_save() {
-	
+
 	var modroot = cloneForJSON(root.children[0]); // clone the elements of root & its children that we need for json string
 	var jsonstring = JSON.stringify(modroot);
-	
+
 	var element = document.createElement('a');
 	element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonstring));
 	element.setAttribute('download', "tree.json");
 	element.style.display = 'none';
 	document.body.appendChild(element);
-	
+
 	element.click();
 	document.body.removeChild(element);
 
@@ -1108,14 +1108,14 @@ function nodeTypeChange() {
  * Read the user's chosen file - can read either text or json
  */
 function readFile(e) {
-	
+
 	var fileInput = document.getElementById('fileInput');
 	var fileDisplayArea = document.getElementById('userJSONdiv');
 	var file = fileInput.files[0];
 	var textType = /text.*/;
 	var jsonType = 'application/json';
 	var fileType = file.type;
-	
+
 	//In case of weird Windows problem where Chrome & FF can't tell a JSON file is a JSON file
 	if(fileType == "") {
 		var items = file.name.split(".");
@@ -1123,30 +1123,30 @@ function readFile(e) {
 			fileType = "application/json";
 		}
 	}
-	
+
 	if (fileType.match(textType)) {
-		
+
 		var reader = new FileReader();
-		
+
 		reader.onload = function(e) {
 			document.getElementById("userJSONtext").innerHTML = reader.result;
 			load(2);// now load to tree
 			document.getElementById('fileUploadChooser').style.display='none';
 		}
-		
+
 		reader.readAsText(file);
 	} else {
-		
+
 		if (fileType.match(jsonType)) {
-		
+
 			var reader = new FileReader();
-		
+
 			reader.onload = function(e) {
 				document.getElementById("userJSONtext").innerHTML = reader.result;
 				load(2);// now load to tree
 				document.getElementById('fileUploadChooser').style.display='none';
 			}
-			
+
 			reader.readAsText(file);
 		} else {
 			fileDisplayArea.innerText = "File not supported!";
@@ -1173,7 +1173,7 @@ function areYouSure() {
  * Add event listener to fileInput element
  */
 window.onload = function() {
-	
+
 	var fileInput = document.getElementById('fileInput');
 	fileInput.addEventListener('change', function(e) {
 		readFile(e);
@@ -1215,35 +1215,35 @@ function createRcode() {
 
 function createDecisionTreeRcode(myroot) {
 	var rcode = new Array();
-	
+
 	// iterate through the tree to extract all the probabilities
-	myroot.children.forEach(function (kid) { 
+	myroot.children.forEach(function (kid) {
 		var probabilities = ""
 		var payoffs = "";
 		var curstring = "";
 		var probs = appendAllChildProbabilities(kid, curstring);
-		
+
 		probs.myprobs.forEach(function (pstr) {
 			probabilities += ", " + pstr;
 		});
 		probabilities = "c(" + probabilities.substring(2) + ")";
-		
+
 		probs.myutils.forEach(function (ustr) {
 			payoffs += ", " + ustr;
 		});
 		payoffs = "c(" + payoffs.substring(2) + ")";
-		
+
 		rcode.push(probabilities + " %*% " + payoffs);
-	}); 
-	
+	});
+
 	return rcode;
-	
+
 }
 
 
 function createMarkovTreeRcode(myroot) {
 	var rcode = new Array();
-	
+
 	var initialProbs = new Array();
 	var initialStates = new Array();
 	var allProbs = new Array();
@@ -1252,44 +1252,44 @@ function createMarkovTreeRcode(myroot) {
 	var curstring = "";
 	var rows = 0;
 	var cols = 0;
-	
+
 	var counter = 0;
 	// first set all possible states
-	myroot.children.forEach(function (kid) { 
+	myroot.children.forEach(function (kid) {
 		initialStates.push(kid.name);
 		initialProbs.push(kid.probability);
 		transProbs[kid.name] = new Array();
 		stateIndex[kid.name] = counter;
 		counter++;
 	});
-	
+
 	rows = initialStates.length;
-	
+
 	initialStates.forEach(function (state) {
 		for (var j = 0; j < rows; j++) {
 			transProbs[state][j] = "";
 		}
 	});
-	
+
 	// iterate through the tree to extract all the probabilities
-	myroot.children.forEach(function (kid) { 
-		
+	myroot.children.forEach(function (kid) {
+
 		var probabilities = new Array()
-		
+
 		var probs = appendAllChildProbabilities(kid, curstring);
 		counter = 0;
 		probs.myutils.forEach(function (ustr) {
 			transProbs[kid.name][stateIndex[ustr]] += " + " + probs.myprobs[counter];
 			counter++;
 		});
-		
-	}); 
+
+	});
 	var initProbs = "";
 	initialProbs.forEach (function (prob) {
 		initProbs += ", " + prob;
 	});
 	initProbs = "initialProbs <- \"c(" + initProbs.substring(2) + ")\"\n";
-	
+
 	var tp = "";
 	for (var i = 0; i < rows; i++) {
 		for (var j = 0; j < rows; j++) {
@@ -1303,7 +1303,7 @@ function createMarkovTreeRcode(myroot) {
 		}
 	}
 	tp = "transProbs <- \"matrix(c(" + tp.substring(2) + "),nrow=" + rows + ", ncol=" + rows + ")\"\n";
-	
+
 	var markovTraceFunction = "markovTrace <- function(initialProbs, transProbs) {\n"
 			+ "	nStates <- " + rows + "\n"
 			+ "	markovTrace <- matrix(0, nCycle+1, nStates)\n"
@@ -1313,10 +1313,10 @@ function createMarkovTreeRcode(myroot) {
 			+ "	}\n"
 			+ "	return(markovTrace)\n"
 		+ "}\n";
-		
+
 	rcode.push(markovTraceFunction + initProbs + tp)
 	return rcode;
-	
+
 }
 
 
@@ -1327,13 +1327,13 @@ var appendAllChildProbabilities = function(node, curstring) {
 
 	var myprobs = new Array();
 	var myutils = new Array();
-	
+
 	if(node.children) {
 		node.children.forEach(function (kid) {
-			
+
 			var kidstring = curstring + ", " + kid.probability;
 			var kidobj = appendAllChildProbabilities(kid,kidstring);
-			
+
 			kidobj.myprobs.forEach(function (kstr) {
 				myprobs.push(kstr);
 			});
@@ -1344,7 +1344,7 @@ var appendAllChildProbabilities = function(node, curstring) {
 		myprobs.push(curstring);
 		myutils.push(node.payoff);
 	}
-	
+
 	return {myprobs:myprobs,myutils:myutils};
 }
 
@@ -1354,11 +1354,11 @@ var appendAllChildProbabilities = function(node, curstring) {
  */
 function printCSV() {
 	//var treedepth = getDepth(root);
-	
+
 	var csv = "";
-	
+
 	if (root.children) {
-		
+
 		root.children.forEach(function (d) {
 			csv = csv + getCSVstring(d, "-", "", 0);
 		})
@@ -1366,9 +1366,9 @@ function printCSV() {
 	console.log("SAVE");
 	console.log(csv);
 	return csv;
-	
+
 	// var htmltext = "<textarea id=\"jsontext\" rows=25 cols=55>"+csv+"</textarea>";
-	
+
 	// document.getElementById("jsonstring").innerHTML = htmltext;
   //Flaf
 	//var hiddenElement = document.createElement('a');
@@ -1378,20 +1378,20 @@ function printCSV() {
 	//hiddenElement.download = 'TreeOpen.csv';
 	//hiddenElement.click();
 
-	
+
 }
 
 function getCSVstring(data, parent, grandparents, tdepth) {
 	var strdelim = "\t"
 	tdepth += 1;
 	var myattr = data.name + strdelim + data.id + strdelim + data.type + strdelim + data.probability + strdelim + data.variables + strdelim + data.payoff;
-	
+
 	var csv = "";
 	if (data.children) {
 		if (parent !== "-") {
 			grandparents += parent + strdelim;
 		}
-		
+
 		parent = myattr;
 		var kidcounter = 0;
 		data.children.forEach(function (d) {
@@ -1403,7 +1403,7 @@ function getCSVstring(data, parent, grandparents, tdepth) {
 			kidcounter++;
 		})
 	} else {
-		
+
 		csv += myattr;
 		var rootdepth = getDepth(root) - 1;
 		while (tdepth < rootdepth) {
@@ -1412,9 +1412,25 @@ function getCSVstring(data, parent, grandparents, tdepth) {
 		}
 		csv += "\n";
 	}
-	
+
 	return csv;
 }
+
+/*
+ * Print first alert message
+ */
+// the event handler listens to shiny for messages send by handler1
+// if it receives a message, call the callback function doAwesomething and pass the message
+
+Shiny.addCustomMessageHandler("handler1", doAwesomeThing );
+
+// this function is called by the handler, which passes the message
+function doAwesomeThing(message){
+
+  // show the messsage as an alert
+  alert(message);
+}
+
 
 
 
