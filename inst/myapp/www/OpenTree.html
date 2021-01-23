@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	
+
    {{ headContent() }}
    {{ bootstrapLib() }}
 </head>
 <body>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 	<title>OpenTree</title>
-	
+
 	<link rel="stylesheet" type="text/css" href="layout-default.css">
 	<link type="text/css" rel="stylesheet" href="style.css"/>
 	<script type="text/javascript" src="jquery.js"></script>
@@ -20,7 +20,7 @@
 	<script type="text/javascript">
 		var myLayout;
 		$(document).ready(function(){
-		
+
 			myLayout = $('body').layout({
 				east__minSize:	350
 			});
@@ -32,7 +32,7 @@
  	<b>OpenTree</b>
 </p>
 <div>
-  
+
 </div>
  <div>
 
@@ -47,31 +47,30 @@
 	<h3>File</h3>
 		<div id="loadbuttons">
 			<div id="errormessages" style="color:red;"></div>
-			<button onclick="load(1); return false">New</button>
+			 <!-- <button onclick="load(1); return false">New</button> -->
 			<button onclick="document.getElementById('fileInput').click()" return false">Open</button>
-			
+
 			<div id="fileUploadChooser" style="display:none;">
 				<input type="file" id="fileInput" onclick="return areYouSure();" >
 				<div id="userJSONdiv" style="display:none;"><textarea id="userJSONtext" cols=50 rows=10></textarea></div>
 				<button onclick="load(2); return false">Load</button>
 			</div>
-			
-			<button onclick="download_save(); return false">Save</button>
-		
+			<!-- <button onclick="download_save(); return false">Save</button> -->
+
 		</div>
-		
+
 		<hr/>
 		<h3>Node</h3>
 		<p>Name:<br/><textarea id="txtNodeName" style="width:98%; padding:1%;" rows="1" oninput="nodeNameChange()"></textarea></p>
 		<form  class="demoForm" id="rbtnNodeType">
-		
+
 		<fieldset>
 			<legend>Type</legend>
-			
+
 			<input type = "radio"
 				name = "radNodeType"
 				id = "nodeDecision"
-				value = "decision" 
+				value = "decision"
 				onclick="nodeTypeChange()" />
 			<label for = "nodeDecision">Decision</label>
 			<br/>
@@ -79,14 +78,14 @@
 				name = "radNodeType"
 				id = "nodeChance"
 				value = "chance"
-				checked = "checked" 
+				checked = "checked"
 				onclick="nodeTypeChange()" />
 			<label for = "nodeChance">Chance</label>
 			<br/>
 			<input type = "radio"
 				name = "radNodeType"
 				id = "nodeTerminal"
-				value = "terminal" 
+				value = "terminal"
 				onclick="nodeTypeChange()" />
 			<label for = "nodeTerminal">Terminal</label>
 			<br/>
@@ -96,17 +95,17 @@
 				value = "markov"
 				onclick="nodeTypeChange()" />
 			<label for = "nodeMarkov">Markov</label>
-			
-		</fieldset>  
+
+		</fieldset>
 		</form>
 		<p>Probability:<br/><textarea id="nodeProbability" style="width:98%; padding:1%;"  rows="3" oninput="probabilityChange()"></textarea></p>
 		<p>Variables:<br/><textarea id="nodeVariables" style="width:98%; padding:1%;"  rows="3" oninput="variablesChange()"></textarea></p>
 		<p>Payoff:<br/><textarea id="nodePayoff" style="width:98%; padding:1%;"  rows="3" oninput="payoffChange()"></textarea></p>
-		
-		
+
+
 		<br/>
 		<hr/>
-		
+
 		<button id="insertnode" onclick="insertNode();">Insert<span id="ins_text"> [Ins]</span></button> <button id="deletebranch" onclick="deleteBranch()">Delete<span> [Del]</span></button>
 		<button onclick="copyBranch()">Copy Subtree</button> <button onclick="pasteBranch()">Paste</button>
 		<p style="width: 100%;">
@@ -119,10 +118,10 @@
 		<hr/>
 		<button id="createRcode" onclick="createRcode();">Generate R code</button>
 		<button id="exportToMatrix" onclick="printCSV();">Export To Dataset</button>
-		
 
-		
-		
+
+
+
 		<div id="jsonstring"></div>
 		<div id="rcodestring"></div>
 		<script type="text/javascript">
