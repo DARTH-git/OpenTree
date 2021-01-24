@@ -17,7 +17,8 @@ job_info <-  jobRunScript("shiny-run.R",
 
 ## read and convert JSON file into DF ========
 readOpenTreeModel <- function(treeName){
-  fileName <- paste0("OpenTree_", treeName, ".json")
+  #fileName <- paste0("OpenTree_", treeName, ".json")
+  fileName <- paste0(treeName, ".json")
   startlist <- jsonlite::fromJSON(fileName, flatten = TRUE)
   list_json <- map_if(startlist, is.data.frame, list) 
   json_df <- as_tibble(list_json)
@@ -44,11 +45,11 @@ create_OpenTree_df <- function(treeName){
     pivot_wider(id_cols = c(branch, tree_lvl), names_from = "tree_attr", values_from = "value") %>% 
     filter(!is.na(id))
   
-  df1 <- df0 %>% 
-    mutate(l_probability = lead(probability)) %>% 
-    filter(type == "chance") %>% 
-    group_by(branch) %>% 
-    summarize(prob_chain = paste(l_probability, collapse = ","))
+  # df1 <- df0 %>% 
+  #   mutate(l_probability = lead(probability)) %>% 
+  #   filter(type == "chance") %>% 
+  #   group_by(branch) %>% 
+  #   summarize(prob_chain = paste(l_probability, collapse = ","))
   
   decision = df0$type[1] == "decision"
   markov = df0$type[1] == "markov"
@@ -62,6 +63,12 @@ create_OpenTree_df <- function(treeName){
 }
 
 create_OpenTree_df_decision <- function(df_input, df1){
+  
+  df1 <- df_input %>% 
+    mutate(l_probability = paste0("(",lead(probability),")")) %>% 
+    filter(type == "chance") %>% 
+    group_by(branch) %>% 
+    summarize(prob_chain = paste(l_probability, collapse = "*"))
   
   df2 <- df_input %>% 
     filter(type == "terminal") %>% 
@@ -82,9 +89,10 @@ create_OpenTree_df_decision <- function(df_input, df1){
     inner_join(df1) %>% 
     inner_join(df2) 
   df_final <- df_combined %>% 
-    mutate(ev = paste("prod(", prob_chain, ") *", payoff, sep = "")) %>% 
+    #mutate(ev = paste("prod(", prob_chain, ") *", payoff, sep = "")) %>% 
     group_by(decision_id) %>% 
-    summarize(ev_string = paste(ev, collapse = "+")) %>% 
+    summarize(v_prob = paste0("c(", paste(prob_chain, collapse = ","), ")"), 
+              v_payoff = paste0("c(", paste(payoff, collapse = ","), ")")) %>% 
     inner_join(dec_names)
   return(df_final)
 }
@@ -147,7 +155,18 @@ create_OpenTree_df_markov <- function(df_input, df1){
 }
 
 evaluate_string <- function(input_string, params){
-  if (class(input_string) == "matrix" | class(input_string) == "data.frame"){
+  if (any(class(input_string) == "data.frame")){
+    y <- input_string
+    nr = nrow(input_string)
+    nc = ncol(input_string)
+    for (r in 1:nr){
+      for (c in 2:3){ #1:nc){
+        #if (class(y[r,c]) != "integer"){
+          y[r,c] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,c])))), ")")
+        #}
+      }
+    }    
+  } else if (class(input_string) == "matrix"){
     nr = nrow(input_string)
     nc = ncol(input_string)
     y <- matrix(0, nrow = nr, ncol = nc)

@@ -4,17 +4,6 @@ library(tidyverse)
 library(jsonlite)
 library(rstudioapi)
 
-# runOpenTreeUI <- function(){
-#   #Run shiny app in the background
-# job_info <-  jobRunScript("shiny-run.R", 
-#                "OpenTree", 
-#                 importEnv = TRUE) #Relative Path 
-#   
-#   # See the tree in the viewer window of RStudio
-#   rstudioapi::viewer("http://localhost:3522")
-#   return(job_info)
-# }
-
 ## read and convert JSON file into DF ========
 readOpenTreeModel <- function(treeName){
   fileName <- paste0(treeName, ".json")
@@ -43,12 +32,7 @@ create_OpenTree_df <- function(treeName){
     mutate(tree_lvl = if_else(is.na(tree_lvl), 0, tree_lvl)) %>% 
     pivot_wider(id_cols = c(branch, tree_lvl), names_from = "tree_attr", values_from = "value") %>% 
     filter(!is.na(id))
-  
-  df1 <- df0 %>% 
-    mutate(l_probability = lead(probability)) %>% 
-    filter(type == "chance") %>% 
-    group_by(branch) %>% 
-    summarize(prob_chain = paste(l_probability, collapse = ","))
+ 
   
   decision = df0$type[1] == "decision"
   markov = df0$type[1] == "markov"
@@ -62,6 +46,12 @@ create_OpenTree_df <- function(treeName){
 }
 
 create_OpenTree_df_decision <- function(df_input, df1){
+  
+  df1 <- df_input %>% 
+    mutate(l_probability = paste0("(",lead(probability),")")) %>% 
+    filter(type == "chance") %>% 
+    group_by(branch) %>% 
+    summarize(prob_chain = paste(l_probability, collapse = "*"))
   
   df2 <- df_input %>% 
     filter(type == "terminal") %>% 
@@ -82,9 +72,10 @@ create_OpenTree_df_decision <- function(df_input, df1){
     inner_join(df1) %>% 
     inner_join(df2) 
   df_final <- df_combined %>% 
-    mutate(ev = paste("prod(", prob_chain, ") *", payoff, sep = "")) %>% 
+    #mutate(ev = paste("prod(", prob_chain, ") *", payoff, sep = "")) %>% 
     group_by(decision_id) %>% 
-    summarize(ev_string = paste(ev, collapse = "+")) %>% 
+    summarize(v_prob = paste0("c(", paste(prob_chain, collapse = ","), ")"), 
+              v_payoff = paste0("c(", paste(payoff, collapse = ","), ")")) %>% 
     inner_join(dec_names)
   return(df_final)
 }
