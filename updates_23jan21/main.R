@@ -34,13 +34,13 @@ params = list(pDieBiopsy = 0.004,
 
 evaluate_string(opentree_df$ev_string[1], params)
 
-opentree_df %>% 
-  rowwise() %>% 
+opentree_df %>%
+  rowwise() %>%
   mutate(ev = evaluate_string(ev_string, params))
 
 # Markov Sick-Sicker model example =======
-treeName <- "test2" #placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
-runOpenTreeUI() #runs the OpenTreeUI
+treeName <- "OpenTree_sick_sicker" #placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
+# runOpenTreeUI() #runs the OpenTreeUI
 
 opentree_df <- create_OpenTree_df(treeName)
 opentree_df
@@ -50,13 +50,13 @@ p_HS1   <- 0.15          	  # probability to become sick when healthy, condition
 p_S1H   <- 0.5           	  # probability to become healthy when sick, conditional on surviving
 p_S1S2  <- 0.105         	  # probability to become sicker when sick, conditional on surviving
 hr_S1   <- 3             	  # hazard ratio of death in sick vs healthy
-hr_S2   <- 10            	  # hazard ratio of death in sicker vs healthy 
+hr_S2   <- 10            	  # hazard ratio of death in sicker vs healthy
 r_HD    <- - log(1 - p_HD)  # rate of death in healthy
 r_S1D   <- hr_S1 * r_HD  	  # rate of death in sick
 r_S2D   <- hr_S2 * r_HD  	  # rate of death in sicker
 p_S1D   <- 1 - exp(-r_S1D)  # probability to die in sick
 p_S2D   <- 1 - exp(-r_S2D)  # probability to die in sicker
-              
+
 params <- list()
 
 m_P <- evaluate_string(opentree_df$P_str, params)
