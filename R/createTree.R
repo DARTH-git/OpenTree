@@ -26,7 +26,7 @@ createTree <- function(fileName, dir_name, libpath) {
   #path_aux <- file.path(wd, paste0(fileName, ".json"))
   #path_aux <- paste0(dir_name, "/", fileName, ".json")
   # paste0(dir_name, "/", fileName, ".json")
-  assign("path_file2", paste0(dir_name, "/", fileName, ".json"), envir = .GlobalEnv)
+  assign("path_file", paste0(dir_name, "/", fileName, ".json"), envir = .GlobalEnv)
 
   if (appDir == "") {
     stop("Could not find myapp. Try re-installing `OpenTree`.", call. = FALSE)
