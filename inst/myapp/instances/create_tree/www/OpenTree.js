@@ -32,14 +32,15 @@ var nodeToCopy;
 var blank = 1; //load the blank tree first
 
 function getShape(type) {
-
-	if(type=="chance" || type=="markov") {
-		return "circle";
-	} else if (type == "decision") {
-		return "square";
-	} else if (type=="terminal"){
-		return "triangle-up";
-	}
+      if(type=="chance"){
+            return "circle";
+      } else if (type == "markov") {
+            return "diamond";
+      } else if (type == "decision") {
+            return "square";
+       } else if (type=="terminal"){
+             return "triangle-up";
+      }
 }
 
 function getColor(type) {
