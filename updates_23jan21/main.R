@@ -2,9 +2,7 @@ source("opentree_functions.R")
 
 # ========= RUN =========
 # define a model name
-treeName <- "test1" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
-# 1. open the UI and create/modify your tree
-runOpenTreeUI() #runs the OpenTreeUI
+treeName <- "Doubilet1985" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
 # 2. convert the tree into a summary dataframe
 opentree_df <- create_OpenTree_df(treeName)
 
@@ -40,8 +38,6 @@ opentree_df %>%
 
 # Markov Sick-Sicker model example =======
 treeName <- "OpenTree_sick_sicker" #placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
-# runOpenTreeUI() #runs the OpenTreeUI
-
 opentree_df <- create_OpenTree_df(treeName)
 opentree_df
 

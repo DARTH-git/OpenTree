@@ -72,13 +72,13 @@ p_load("here", "dplyr", "devtools", "scales", "ellipse", "ggplot2", "lazyeval", 
 # load (install if required) packages from GitHub
 # install_github("DARTH-git/dampack", force = TRUE) Uncomment if there is a newer version
 # install_github("DARTH-git/darthtools", force = TRUE) Uncomment if there is a newer version
-p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools")
+p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 ```
 
 # 02 Load functions
 
 ```{r}
-# source("opentree_functions.R")
+source("opentree_functions.R")
 ```
 
 # 03 Input model parameters
@@ -153,24 +153,6 @@ plotmat(t(m_P_diag), t(layout.fig), self.cex = 0.5, curve = 0, arr.pos = 0.7,
         cex = 0.8, box.cex = 0.9, lwd = 1)
 ```
 
-
-```{r}
-library(tidyverse)
-# remove.packages("OpenTree")
-# devtools::install_github("DARTH-git/OpenTree")
-library(OpenTree)
-# Get OpenTree library path
-OpenTree.libpath <- as.data.frame(installed.packages()) %>% 
-                    filter(Package == "OpenTree") %>%
-                    select(LibPath) %>%
-                    pull()
-createTree(fileName = "Helloworld", dirname = getwd(), libpath = OpenTree.libpath)
-```
-
-```{r}
-openTree(paste0"Helloworld.json")
-```
-
 # 04 Define and initialize matrices and vectors
 
 ## 04.1 Transitional probability matrix
@@ -178,8 +160,7 @@ openTree(paste0"Helloworld.json")
 Use OpenTree to build the Markov model and retrieve the transition probability matrix
 
 ```{r}
-treeName <- "helloworld" # placeholder, after OpenTree is open, open model .json file
-runOpenTreeUI() #runs the OpenTreeUI
+treeName <- "OpenTree_sick_sicker" # placeholder, after OpenTree is open, open model .json file
 opentree_df <- create_OpenTree_df(treeName)
 params <- list()
 m_P_notrt <- evaluate_string(opentree_df$P_str, params)
