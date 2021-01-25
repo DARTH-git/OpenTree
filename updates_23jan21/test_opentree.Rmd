@@ -30,7 +30,8 @@ OpenTree.libpath <- as.data.frame(installed.packages()) %>%
                     pull()
 createTree(fileName = "Helloworld", dir_name = getwd(), 
            libpath = OpenTree.libpath)
-openTree(dirname = here("updates_23jan21", "Helloworld.json"))
+openTree(dirname = here("updates_23jan21", "Helloworld.json"), 
+         libpath = OpenTree.libpath)
 ```
 
 ```{r,}
