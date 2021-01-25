@@ -18,7 +18,7 @@
 #' @return
 #' Interface with the json file inside the directory output
 #' @export
-openTree <- function(dirname) {
+openTree <- function(dirname, libpath) {
   require(rstudioapi)
   require(readr)
   appDir <- system.file("myapp", package = "OpenTree")

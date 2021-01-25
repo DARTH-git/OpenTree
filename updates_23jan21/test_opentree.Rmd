@@ -22,6 +22,7 @@ library(tidyverse)
 # remove.packages("OpenTree")
 devtools::install_github("DARTH-git/OpenTree")
 library(OpenTree)
+library(here)
 # Get OpenTree library path
 OpenTree.libpath <- as.data.frame(installed.packages()) %>% 
                     filter(Package == "OpenTree") %>%
@@ -29,7 +30,7 @@ OpenTree.libpath <- as.data.frame(installed.packages()) %>%
                     pull()
 createTree(fileName = "Helloworld", dir_name = getwd(), 
            libpath = OpenTree.libpath)
-openTree(dir_name = here("updates_23jan21", "Helloworld.json"))
+openTree(dirname = here("updates_23jan21", "Helloworld.json"))
 ```
 
 ```{r,}
