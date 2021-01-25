@@ -1,4 +1,4 @@
-source("opentree_functions.R")
+source("opentree_functions2.R")
 
 # ========= RUN =========
 # define a model name
