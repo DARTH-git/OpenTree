@@ -18,13 +18,12 @@ When you click the **Knit** button a documesnt will be generated that includes b
 *TASK: Viewer pane instead of window*
 
 ```{r,}
-library(tidyverse)
 # remove.packages("OpenTree")
 devtools::install_github("DARTH-git/OpenTree")
 library(OpenTree)
 
-create_tree(file_name = "Helloworld.json", dir_name = getwd())
-open_tree(file_name = "Helloworld.json", dir_name = getwd())
+create_tree(file_name = "Helloworld", dir_name = getwd())
+open_tree(file_name = "Helloworld", dir_name = getwd())
 ```
 
 
