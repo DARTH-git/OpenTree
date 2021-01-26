@@ -18,17 +18,19 @@
 #' @return
 #'
 #' @export
-open_tree <- function(dirname) {
+open_tree <- function(file_name, dir_name) {
   # Mandatory libraries -------------------------------------------------------
   require(readr)
   require(rstudioapi)
 
   # Define app directory --------------------------------------------------------
   appDir <- system.file("myapp/instances/open_tree", package = "OpenTree")
+  dir_name_aux <- paste0(dir_name, "/", file_name, ".json")
 
   # Global Variable --------------------------------------------------------
   #dirname; will help to connectopen_tree() with the shiny application
-  assign("dirname", dirname, envir = .GlobalEnv)
+  assign("dir_name", dir_name_aux, envir = .GlobalEnv)
+  assign("file_name", file_name, envir = .GlobalEnv)
 
   # Check path of appDir  ---------------------------------------------------
   if (appDir == "") {

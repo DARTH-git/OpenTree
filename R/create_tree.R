@@ -19,7 +19,7 @@
 #'
 #' @export
 #'
-create_tree <- function(fileName, dirname) {
+create_tree <- function(file_name, dir_name) {
   # Mandatory libraries -------------------------------------------------------
   require(rstudioapi)
 
@@ -28,9 +28,9 @@ create_tree <- function(fileName, dirname) {
 
   # Global Variable --------------------------------------------------------
   #dir_name; will help to connect create_tree() with the shiny application
-  path_file <- paste0(dirname,"/", fileName, ".json")
+  path_file <- paste0(dir_name,"/", file_name, ".json")
   assign("path_file", path_file, envir = .GlobalEnv)
-  assign("dirname", dirname, envir = .GlobalEnv)
+  assign("dir_name", dir_name, envir = .GlobalEnv)
 
   # Check path of appDir  ---------------------------------------------------
   if (appDir == "") {

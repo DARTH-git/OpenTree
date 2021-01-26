@@ -32,12 +32,12 @@ ui <- htmlTemplate("www/OpenTree.html",
 server <-  function(input, output, session){
 
   # First Message
-  message <- paste0("Warning: any changes to the tree structure will be automatically saved to ", dirname ,  " in real-time.", "\n \n" , "To avoid losing work, please make sure to make a copy of this file before proceeding.")
+  message <- paste0("Warning: any changes to the tree structure will be automatically saved to ", dir_name ,  " in real-time.", "\n \n" , "To avoid losing work, please make sure to make a copy of ", file_name,  ".json before proceeding.")
   # send the message to the event handler with name handler1
   session$sendCustomMessage("handler1", message)
 
   #Read json file
-  jsonData <- read_file(dirname)
+  jsonData <- read_file(dir_name)
   session$sendCustomMessage("jsonData", jsonData)
 
   # This block fires each time we receive a message from JavaScript
@@ -50,7 +50,7 @@ server <-  function(input, output, session){
 
     #Write json
     json_value = input$jsonData
-    write(json_value, dirname)
+    write(json_value, dir_name)
   })
 
 }
