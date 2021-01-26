@@ -32,7 +32,7 @@ ui <- htmlTemplate("www/OpenTree.html",
 server <-  function(input, output, session){
 
   # First Message
-  message <- paste0("Warning: any changes to the tree structure will be automatically saved to ", dir_name ,  " in real-time.", "\n \n" , "To avoid losing work, please make sure to make a copy of ", file_name,  ".json before proceeding.")
+  message <- paste0("Warning: any changes to the tree structure will be automatically saved to ", dir_name ,  " in real-time.", "\n \n" , "To avoid losing work, please make sure to make a copy of ", file_name,  " before proceeding.")
   # send the message to the event handler with name handler1
   session$sendCustomMessage("handler1", message)
 

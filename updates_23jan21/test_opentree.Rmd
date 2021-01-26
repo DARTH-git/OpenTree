@@ -43,3 +43,11 @@ library(here)
 openTree(here("updates_23jan21", "Helloworld.json"))
 ```
 
+```{r}
+library(OpenTree)
+create_tree(file_name = "Helloworld.json", dir_name = getwd())
+open_tree(file_name = "Helloworld.json", dir_name = getwd())
+```
+
+
+
