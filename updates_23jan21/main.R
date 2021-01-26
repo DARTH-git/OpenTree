@@ -30,11 +30,14 @@ params = list(pDieBiopsy = 0.004,
               uMod       = .8,
               uMld       = 1)
 
-evaluate_string(opentree_df$ev_string[1], params)
+opentree_df
+evaluate_string(opentree_df, params)
 
-opentree_df %>%
-  rowwise() %>%
-  mutate(ev = evaluate_string(ev_string, params))
+# evaluate_string(opentree_df$ev_string[1], params)
+#
+# opentree_df %>%
+#   rowwise() %>%
+#   mutate(ev = evaluate_string(ev_string, params))
 
 # Markov Sick-Sicker model example =======
 treeName <- "OpenTree_sick_sicker" #placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
