@@ -1,21 +1,19 @@
-source("opentree_functions1.R")
-
-# ========= RUN =========
+### Decision tree example: Doubilet 1985
 # define a model name
 treeName <- "Doubilet1985" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
-# 2. convert the tree into a summary dataframe
+# convert the tree into a summary dataframe
 opentree_df <- create_OpenTree_df(treeName)
 
-# Strategy names
+# strategy names
 v_names_str <- opentree_df$name
 
-# decision tree - Doubilet Example ========
+# define model parameters
 params = list(pDieBiopsy = 0.004,
               pSevBiopsy = 0.01,
               pModBiopsy = 0.03,
               sensBiopsy = 0.95,
               specBiopsy = 0.99,
-              pHSE       = 0.4, #overall
+              pHSE       = 0.4, # overall
               pDieHSE    = .7,
               pSevHSE    = .333,
               pModHSE    = .5,
@@ -43,17 +41,13 @@ for (i in 1:length(v_names_str)) {
 v_effects
 
 
-# evaluate_string(opentree_df$ev_string[1], params)
-#
-# opentree_df %>%
-#   rowwise() %>%
-#   mutate(ev = evaluate_string(ev_string, params))
-
-# Markov Sick-Sicker model example =======
+### Markov Sick-Sicker model example
+# define a model name
 treeName <- "OpenTree_sick_sicker" #placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
 opentree_df <- create_OpenTree_df(treeName)
 opentree_df
 
+# define model parameters
 p_HD    <- 0.005            # probability to die when healthy
 p_HS1   <- 0.15          	  # probability to become sick when healthy, conditional on surviving
 p_S1H   <- 0.5           	  # probability to become healthy when sick, conditional on surviving

@@ -78,7 +78,7 @@ p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 # 02 Load functions
 
 ```{r}
-source("opentree_functions.R")
+# all functions are in the darthtools package so no need for additional functions
 ```
 
 # 03 Input model parameters

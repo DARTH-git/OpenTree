@@ -83,7 +83,6 @@ p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 
 ```{r}
 # all functions are in the darthtools package so no need for additional functions
-source("opentree_functions1.R")
 ```
 
 # 03 Define parameter input values

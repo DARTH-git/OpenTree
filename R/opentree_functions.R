@@ -4,8 +4,16 @@ library(tidyverse)
 library(jsonlite)
 library(rstudioapi)
 
-## read and convert JSON file into DF ========
+#' readOpenTreeModel
+#' \{readOpenTreeModel} reads and converts JSON file into R dataframe
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
 readOpenTreeModel <- function(treeName){
+  #fileName <- paste0("OpenTree_", treeName, ".json")
   fileName <- paste0(treeName, ".json")
   startlist <- jsonlite::fromJSON(fileName, flatten = TRUE)
   list_json <- map_if(startlist, is.data.frame, list)
@@ -19,6 +27,14 @@ readOpenTreeModel <- function(treeName){
   return(json_df)
 }
 
+#' create_OpenTree_df
+#' \{create_OpenTree_df} reads and converts JSON file into a re-formatted R dataframe
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
 create_OpenTree_df <- function(treeName){
   # first convert json to dataframe
   model_df <- readOpenTreeModel(treeName) #converts the model into a df
@@ -50,6 +66,14 @@ create_OpenTree_df <- function(treeName){
   return(df_final)
 }
 
+#' create_OpenTree_df_decision
+#' \{create_OpenTree_df_decision} post-processes the decision tree R dataframe
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
 create_OpenTree_df_decision <- function(df_input, df1){
 
   df1 <- df_input %>%
@@ -85,6 +109,14 @@ create_OpenTree_df_decision <- function(df_input, df1){
   return(df_final)
 }
 
+#' create_OpenTree_df_markov
+#' \{create_OpenTree_df_markov} post-processes the Markov decision tree R dataframe
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
 create_OpenTree_df_markov <- function(df_input, df1){
   #
   # each branch must have state1 and state2
@@ -142,8 +174,44 @@ create_OpenTree_df_markov <- function(df_input, df1){
   return(df_final)
 }
 
-evaluate_string <- function(input_string, params){
-  if (class(input_string) == "matrix" | class(input_string) == "data.frame"){
+#' evaluate_model
+#' \{evaluate_model} evaluates the decision model
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
+evaluate_model <- function(input_string, params, treetype, n_payoffs){
+  if (treetype == "decision") {
+    if (any(class(input_string) == "data.frame")){
+      y <- input_string
+      y <- input_string[, !names(y) == "name"]
+      nr = nrow(input_string)
+      nc = ncol(input_string)
+      df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs))
+      for (r in 1:nr){
+        y[r,2] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,2])))), ")")
+        a <- as.character(input_string[r,3])
+        a1 <- unlist(strsplit(a, split=","))
+        a2 <- gsub("[)]", "", a1)
+        a2[1] <- paste0(strsplit(a2[1], split="")[[1]][-c(1:2)], collapse="")
+        a3 <- strsplit(a2, ";")
+        a4 <- data.frame(matrix(unlist(a3), nrow=length(a3), byrow=T))
+        a5 <- apply(a4, 2, function(x){toString(with(params, eval(x)))})
+        a6 <- as.data.frame(as.matrix(a5))
+        a7 <- apply(a6, 1, function(x){paste0("c(", x, ")")})
+        for (j in 1:n_payoffs) {
+        df_payoffs[r, j] <- paste0("c(", toString( with(params, eval(parse(text=a7[j])))), ")")
+        }
+      }
+      y <- y[,-3]
+      for (i in 1:n_payoffs) {
+        y[, paste0("v_payoff", i)] <- df_payoffs[,i]
+      }
+    }
+  }
+   else if (treetype == "markov"){
     nr = nrow(input_string)
     nc = ncol(input_string)
     y <- matrix(0, nrow = nr, ncol = nc)
@@ -152,14 +220,18 @@ evaluate_string <- function(input_string, params){
         y[r,c] <- with(params, eval(parse(text=input_string[r,c])))
       }
     }
-  } else if (length(input_string) > 1){
-    ne <- length(input_string)
-    y <- rep(0, ne)
-    for (i in 1:ne){
-      y[i] <- with(params, eval(parse(text=input_string[i])))
-    }
-  } else if (class(input_string) == "character"){
-    y <- with(params, eval(parse(text=input_string)))
   }
   return(y)
+}
+
+#' eval_num
+#' \{eval_num} extracts the numeric component of the evaluated model output
+#'
+#' @param
+#' @return
+#'
+#' @export
+#'
+eval_num <-function(x) {
+  eval(parse(text=x))
 }
