@@ -1,10 +1,13 @@
-source("opentree_functions2.R")
+source("opentree_functions1.R")
 
 # ========= RUN =========
 # define a model name
 treeName <- "Doubilet1985" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
 # 2. convert the tree into a summary dataframe
 opentree_df <- create_OpenTree_df(treeName)
+
+# Strategy names
+v_names_str <- opentree_df$name
 
 # decision tree - Doubilet Example ========
 params = list(pDieBiopsy = 0.004,
@@ -31,8 +34,13 @@ params = list(pDieBiopsy = 0.004,
               uMld       = 1)
 
 opentree_df
-evaluate_string(opentree_df, params)
-
+df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision")
+v_effects <- vector(mode = "numeric", length = length(v_names_str))
+names(v_effects) <- v_names_str
+for (i in 1:length(v_names_str)) {
+  v_effects[i] <- eval_num(df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff[i])
+}
+v_effects
 
 
 # evaluate_string(opentree_df$ev_string[1], params)
@@ -60,8 +68,8 @@ p_S2D   <- 1 - exp(-r_S2D)  # probability to die in sicker
 
 params <- list()
 
-m_P <- evaluate_string(opentree_df$P_str, params)
+m_P <- evaluate_model(opentree_df$P_str, params, treetype = "markov")
 m_P
-v_s_init <- evaluate_string(opentree_df$p0_str$p0, params)
+v_s_init <- as.numeric(opentree_df$p0_str$p0)
 v_s_init
 

@@ -6,9 +6,9 @@ library(rstudioapi)
 
 runOpenTreeUI <- function(){
   #Run shiny app in the background
-job_info <-  jobRunScript("shiny-run.R",
-               "OpenTree",
-                importEnv = TRUE) #Relative Path
+  job_info <-  jobRunScript("shiny-run.R",
+                            "OpenTree",
+                            importEnv = TRUE) #Relative Path
 
   # See the tree in the viewer window of RStudio
   rstudioapi::viewer("http://localhost:3522")
@@ -154,19 +154,19 @@ create_OpenTree_df_markov <- function(df_input, df1){
   return(df_final)
 }
 
-evaluate_string <- function(input_string, params){
-  if (any(class(input_string) == "data.frame")){
-    y <- input_string
-    nr = nrow(input_string)
-    nc = ncol(input_string)
-    for (r in 1:nr){
-      for (c in 2:3){ #1:nc){
-        #if (class(y[r,c]) != "integer"){
+evaluate_model <- function(input_string, params, treetype){
+  if (treetype == "decision") {
+    if (any(class(input_string) == "data.frame")){
+      y <- input_string
+      nr = nrow(input_string)
+      nc = ncol(input_string)
+      for (r in 1:nr){
+        for (c in 2:3){
           y[r,c] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,c])))), ")")
-        #}
+        }
       }
     }
-  } else if (class(input_string) == "matrix"){
+  } else if (treetype == "markov"){
     nr = nrow(input_string)
     nc = ncol(input_string)
     y <- matrix(0, nrow = nr, ncol = nc)
@@ -175,14 +175,10 @@ evaluate_string <- function(input_string, params){
         y[r,c] <- with(params, eval(parse(text=input_string[r,c])))
       }
     }
-  } else if (length(input_string) > 1){
-    ne <- length(input_string)
-    y <- rep(0, ne)
-    for (i in 1:ne){
-      y[i] <- with(params, eval(parse(text=input_string[i])))
-    }
-  } else if (class(input_string) == "character"){
-    y <- with(params, eval(parse(text=input_string)))
   }
   return(y)
+}
+
+eval_num <-function(x) {
+  eval(parse(text=x))
 }
