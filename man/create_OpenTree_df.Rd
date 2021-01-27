@@ -2,13 +2,18 @@
 % Please edit documentation in R/opentree_functions.R
 \name{create_OpenTree_df}
 \alias{create_OpenTree_df}
-\title{}
+\title{create_OpenTree_df
+\code{create_OpenTree_df} reads and converts JSON file into a re-formatted R dataframe}
 \usage{
 create_OpenTree_df(treeName)
 }
+\arguments{
+\item{treeName}{name of the tree model}
+}
 \value{
-
+a dataframe to be processed
 }
 \description{
-
+create_OpenTree_df
+\code{create_OpenTree_df} reads and converts JSON file into a re-formatted R dataframe
 }

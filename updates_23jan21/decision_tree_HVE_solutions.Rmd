@@ -76,7 +76,9 @@ if (!require('pacman')) install.packages('pacman'); library(pacman) # use this p
 # load (install if required) packages from CRAN
 p_load("dplyr", "devtools", "scales", "ellipse", "ggplot2", "lazyeval", "igraph",  "ggraph", "reshape2", "knitr", "stringr")                                               
 # load (install if required) packages from GitHub
-p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
+p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools")
+# install 
+devtools::install_github("DARTH-git/OpenTree")
 ```
 
 # 02 Load functions

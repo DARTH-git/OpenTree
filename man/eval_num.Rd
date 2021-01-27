@@ -2,13 +2,18 @@
 % Please edit documentation in R/opentree_functions.R
 \name{eval_num}
 \alias{eval_num}
-\title{}
+\title{eval_num
+\code{eval_num} extracts the numeric component of the evaluated model output}
 \usage{
 eval_num(x)
 }
+\arguments{
+\item{x}{a character string of numbers}
+}
 \value{
-
+a vector of numbers
 }
 \description{
-
+eval_num
+\code{eval_num} extracts the numeric component of the evaluated model output
 }

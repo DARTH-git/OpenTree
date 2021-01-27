@@ -12,10 +12,11 @@
 ##************************************************************************
 
 #' create_tree
-#' \{create_tree}
+#' \code{create_tree}
 #'
-#' @param
-#' @return
+#' @param file_name name of the file
+#' @param dir_name directory to save the file to
+#' @return opens OpenTree
 #'
 #' @export
 #'

@@ -2,13 +2,24 @@
 % Please edit documentation in R/opentree_functions.R
 \name{evaluate_model}
 \alias{evaluate_model}
-\title{}
+\title{evaluate_model
+\code{evaluate_model} evaluates the decision model}
 \usage{
 evaluate_model(input_string, params, treetype, n_payoffs)
 }
-\value{
+\arguments{
+\item{input_string}{OpenTree-compatible dataframe}
 
+\item{params}{list of model input parameters}
+
+\item{treetype}{type of decision tree (decision or markov)}
+
+\item{n_payoffs}{number of payoffs}
+}
+\value{
+evaluated model output
 }
 \description{
-
+evaluate_model
+\code{evaluate_model} evaluates the decision model
 }

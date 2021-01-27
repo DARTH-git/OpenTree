@@ -1,14 +1,14 @@
 # OpenTree functions
 
-library(tidyverse)
-library(jsonlite)
-library(rstudioapi)
+if (!require(tidyverse)) install.packages('tidyverse'); library(tidyverse)
+if (!require(jsonlite)) install.packages('jsonlite'); library(jsonlite)
+if (!require(rstudioapi)) install.packages('rstudioapi'); library(rstudioapi)
 
 #' readOpenTreeModel
-#' \{readOpenTreeModel} reads and converts JSON file into R dataframe
+#' \code{readOpenTreeModel} reads and converts JSON file into R dataframe
 #'
-#' @param
-#' @return
+#' @param treeName name of the tree model
+#' @return a dataframe to be processed
 #'
 #' @export
 #'
@@ -28,10 +28,10 @@ readOpenTreeModel <- function(treeName){
 }
 
 #' create_OpenTree_df
-#' \{create_OpenTree_df} reads and converts JSON file into a re-formatted R dataframe
+#' \code{create_OpenTree_df} reads and converts JSON file into a re-formatted R dataframe
 #'
-#' @param
-#' @return
+#' @param treeName name of the tree model
+#' @return a dataframe to be processed
 #'
 #' @export
 #'
@@ -67,10 +67,11 @@ create_OpenTree_df <- function(treeName){
 }
 
 #' create_OpenTree_df_decision
-#' \{create_OpenTree_df_decision} post-processes the decision tree R dataframe
+#' \code{create_OpenTree_df_decision} post-processes the decision tree R dataframe
 #'
-#' @param
-#' @return
+#' @param df_input input dataframe
+#' @param df1 side dataframe
+#' @return processed dataframe
 #'
 #' @export
 #'
@@ -110,10 +111,11 @@ create_OpenTree_df_decision <- function(df_input, df1){
 }
 
 #' create_OpenTree_df_markov
-#' \{create_OpenTree_df_markov} post-processes the Markov decision tree R dataframe
+#' \code{create_OpenTree_df_markov} post-processes the Markov decision tree R dataframe
 #'
-#' @param
-#' @return
+#' @param df_input input dataframe
+#' @param df1 side dataframe
+#' @return processed dataframe
 #'
 #' @export
 #'
@@ -175,10 +177,13 @@ create_OpenTree_df_markov <- function(df_input, df1){
 }
 
 #' evaluate_model
-#' \{evaluate_model} evaluates the decision model
+#' \code{evaluate_model} evaluates the decision model
 #'
-#' @param
-#' @return
+#' @param input_string OpenTree-compatible dataframe
+#' @param params list of model input parameters
+#' @param treetype type of decision tree (decision or markov)
+#' @param n_payoffs number of payoffs
+#' @return evaluated model output
 #'
 #' @export
 #'
@@ -225,10 +230,10 @@ evaluate_model <- function(input_string, params, treetype, n_payoffs){
 }
 
 #' eval_num
-#' \{eval_num} extracts the numeric component of the evaluated model output
+#' \code{eval_num} extracts the numeric component of the evaluated model output
 #'
-#' @param
-#' @return
+#' @param x a character string of numbers
+#' @return a vector of numbers
 #'
 #' @export
 #'

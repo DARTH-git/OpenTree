@@ -2,13 +2,20 @@
 % Please edit documentation in R/opentree_functions.R
 \name{create_OpenTree_df_decision}
 \alias{create_OpenTree_df_decision}
-\title{}
+\title{create_OpenTree_df_decision
+\code{create_OpenTree_df_decision} post-processes the decision tree R dataframe}
 \usage{
 create_OpenTree_df_decision(df_input, df1)
 }
-\value{
+\arguments{
+\item{df_input}{input dataframe}
 
+\item{df1}{side dataframe}
+}
+\value{
+processed dataframe
 }
 \description{
-
+create_OpenTree_df_decision
+\code{create_OpenTree_df_decision} post-processes the decision tree R dataframe
 }

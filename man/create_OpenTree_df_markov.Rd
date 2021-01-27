@@ -2,13 +2,20 @@
 % Please edit documentation in R/opentree_functions.R
 \name{create_OpenTree_df_markov}
 \alias{create_OpenTree_df_markov}
-\title{}
+\title{create_OpenTree_df_markov
+\code{create_OpenTree_df_markov} post-processes the Markov decision tree R dataframe}
 \usage{
 create_OpenTree_df_markov(df_input, df1)
 }
-\value{
+\arguments{
+\item{df_input}{input dataframe}
 
+\item{df1}{side dataframe}
+}
+\value{
+processed dataframe
 }
 \description{
-
+create_OpenTree_df_markov
+\code{create_OpenTree_df_markov} post-processes the Markov decision tree R dataframe
 }

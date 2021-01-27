@@ -2,13 +2,18 @@
 % Please edit documentation in R/opentree_functions.R
 \name{readOpenTreeModel}
 \alias{readOpenTreeModel}
-\title{}
+\title{readOpenTreeModel
+\code{readOpenTreeModel} reads and converts JSON file into R dataframe}
 \usage{
 readOpenTreeModel(treeName)
 }
+\arguments{
+\item{treeName}{name of the tree model}
+}
 \value{
-
+a dataframe to be processed
 }
 \description{
-
+readOpenTreeModel
+\code{readOpenTreeModel} reads and converts JSON file into R dataframe
 }

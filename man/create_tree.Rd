@@ -2,13 +2,20 @@
 % Please edit documentation in R/create_tree.R
 \name{create_tree}
 \alias{create_tree}
-\title{}
+\title{create_tree
+\code{create_tree}}
 \usage{
 create_tree(file_name, dir_name)
 }
-\value{
+\arguments{
+\item{file_name}{name of the file}
 
+\item{dir_name}{directory to save the file to}
+}
+\value{
+opens OpenTree
 }
 \description{
-
+create_tree
+\code{create_tree}
 }

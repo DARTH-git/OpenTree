@@ -12,10 +12,11 @@
 ##************************************************************************
 
 #' open_tree
-#' \{open_tree}
+#' \code{open_tree}
 #'
-#' @param
-#' @return
+#' @param file_name name of the file
+#' @param dir_name directory to save the file to
+#' @return opens OpenTree
 #'
 #' @export
 open_tree <- function(file_name, dir_name) {
