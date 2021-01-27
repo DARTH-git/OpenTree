@@ -99,8 +99,9 @@
 		</fieldset>
 		</form>
 		<p>Probability:<br/><textarea id="nodeProbability" style="width:98%; padding:1%;"  rows="3" oninput="probabilityChange()"></textarea></p>
-		<p>Variables:<br/><textarea id="nodeVariables" style="width:98%; padding:1%;"  rows="3" oninput="variablesChange()"></textarea></p>
-		<p>Payoff:<br/><textarea id="nodePayoff" style="width:98%; padding:1%;"  rows="3" oninput="payoffChange()"></textarea></p>
+		<p><br/><textarea id="nodeVariables" style="display:none;"  rows="3" oninput="variablesChange()"></textarea></p>
+<!-- 		<p>Variables:<br/><textarea id="nodeVariables" style="display:none;"width:98%; padding:1%;"  rows="3" oninput="variablesChange()"></textarea></p>
+ -->		<p>Payoff:<br/><textarea id="nodePayoff" style="width:98%; padding:1%;"  rows="3" oninput="payoffChange()"></textarea></p>
 
 
 		<br/>
@@ -116,8 +117,8 @@
 			</span>
 		</p>
 		<hr/>
-		<button id="createRcode" onclick="createRcode();">Generate R code</button>
-		<button id="exportToMatrix" onclick="printCSV();">Export To Dataset</button>
+		<button style="display:none;" id="createRcode" onclick="createRcode();">Generate R code</button>
+		<button style="display:none;" id="exportToMatrix" onclick="printCSV();">Export To Dataset</button>
 
 
 

@@ -305,7 +305,7 @@ var node = svg.selectAll(".node")
 
 			div.html(
 				"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
-				"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
+				// "<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
 				(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 			)
 			.style("left", (d3.event.pageX - ttw-15) + "px")
@@ -600,7 +600,7 @@ function update(addlevel) {
 
 				div.html(
 					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
-					"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
+					// "<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
 					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 				)
 				.style("left", (d3.event.pageX - ttw-15) + "px")
@@ -769,7 +769,7 @@ function load(blank) {
 
 				div.html(
 					"<strong>Probability:</strong> " + d.probability.replace(/\n/gi, "<br/>") + "<br/>" +
-					"<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
+					// "<strong>Variables:</strong> " + d.variables.replace(/\n/gi, "<br/>") + "<br/>" +
 					(d.children && d.payoff=="" ? "" :"<strong>Payoff:</strong> " + d.payoff.replace(/\n/gi, "<br/>"))
 				)
 				.style("left", (d3.event.pageX - ttw-15) + "px")
