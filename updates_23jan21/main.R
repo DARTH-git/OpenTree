@@ -33,6 +33,8 @@ params = list(pDieBiopsy = 0.004,
 opentree_df
 evaluate_string(opentree_df, params)
 
+
+
 # evaluate_string(opentree_df$ev_string[1], params)
 #
 # opentree_df %>%
