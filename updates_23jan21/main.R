@@ -34,11 +34,11 @@ params = list(pDieBiopsy = 0.004,
               uMld       = 1)
 
 opentree_df
-df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision")
+df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision", n_payoffs = 1)
 v_effects <- vector(mode = "numeric", length = length(v_names_str))
 names(v_effects) <- v_names_str
 for (i in 1:length(v_names_str)) {
-  v_effects[i] <- eval_num(df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff[i])
+  v_effects[i] <- eval_num(df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff1[i])
 }
 v_effects
 

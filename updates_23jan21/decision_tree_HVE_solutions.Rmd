@@ -60,7 +60,7 @@ and adapted with proper attribution.
 \newpage
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
 ```
 
 Change `eval` to `TRUE` if you want to knit this document.
@@ -74,7 +74,7 @@ rm(list = ls())      # clear memory (removes all the variables from the workspac
 ```{r, warning = FALSE, message = FALSE}
 if (!require('pacman')) install.packages('pacman'); library(pacman) # use this package to conveniently install other packages
 # load (install if required) packages from CRAN
-p_load("dplyr", "devtools", "scales", "ellipse", "ggplot2", "lazyeval", "igraph",  "ggraph", "reshape2", "knitr", "stringr", "OpenTree")                                               
+p_load("dplyr", "devtools", "scales", "ellipse", "ggplot2", "lazyeval", "igraph",  "ggraph", "reshape2", "knitr", "stringr")                                               
 # load (install if required) packages from GitHub
 p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 ```
@@ -83,13 +83,7 @@ p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 
 ```{r}
 # all functions are in the darthtools package so no need for additional functions
-source("opentree_functions.R")
-```
-
-# 03 Draw decision tree with OpenTree
-
-```{r}
-create_tree(file_name = "HVE", dir_name = getwd())
+source("opentree_functions1.R")
 ```
 
 # 03 Define parameter input values
@@ -123,8 +117,7 @@ q_death_biopsy <- 0      # remaining QALYs for those who died during biopsy
 # 04 Create and run decision tree model
 
 ```{r}
-# Create vector of weights for each strategy 
-  
+# Create vector of weights for each strategy
 v_w_no_tx  <- c(    p_HVE  *      p_HVE_comp     ,  # HVE, complications
                     p_HVE  * (1 - p_HVE_comp)    ,  # HVE, no complications
                (1 - p_HVE) *      p_OVE_comp     ,  # OVE, complications
@@ -207,6 +200,71 @@ names(v_total_qaly) <- v_names_str  # names for the elements of the total QALYs 
 names(v_total_cost) <- v_names_str  # names for the elements of the total cost vector
 names(v_nmb)        <- v_names_str  # names for the elements of the nmb vector
   
+df_output <- data.frame(Strategy =  v_names_str,
+                        Cost     =  v_total_cost,
+                        Effect   =  v_total_qaly,
+                        NMB      =  v_nmb)
+
+# model output
+df_output
+```
+
+## Use OpenTree
+
+```{r}
+params = list(
+  # Probabilities
+  p_HVE          <- 0.52,   # prevalence of HVE
+  p_HVE_comp     <- 0.71,   # complications with untreated HVE
+  p_OVE_comp     <- 0.01,   # complications with untreated OVE
+  p_HVE_comp_tx  <- 0.36,   # complications with treated HVE
+  p_OVE_comp_tx  <- 0.20,   # complications with treated OVE
+  p_biopsy_death <- 0.005,  # probability of death due to biopsy
+
+  # Costs
+  c_VE           <- 1200,   # cost of viral encephalitis care without complications
+  c_VE_comp      <- 9000,   # cost of viral encephalitis care with complications
+  c_tx           <- 9500,   # cost of treatment
+  c_biopsy       <- 25000,  # cost of brain biopsy
+
+  # QALYs
+  q_VE           <- 20,     # remaining QALYs for those without VE-related complications
+  q_VE_comp      <- 19,     # remaining QALYs for those with VE-related complications
+  q_loss_biopsy  <- 0.01,   # one-time  QALY loss due to brain biopsy
+  q_death_biopsy <- 0       # remaining QALYs for those who died during biopsy
+)
+```
+
+Draw/ open decision tree
+
+```{r}
+# create_tree(file_name = "HVE", dir_name = getwd())
+open_tree(file_name = "HVE", dir_name = getwd())
+```
+
+Evaluate outcomes of decision tree
+
+```{r, warning = F}
+# define a model name
+treeName <- "HVE" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
+# 2. convert the tree into a summary dataframe
+opentree_df <- create_OpenTree_df(treeName)
+
+df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision", n_payoffs = 2)
+v_total_qaly <- v_total_cost <- vector(mode = "numeric", length = length(v_names_str))
+names(v_total_qaly) <- names(v_total_cost) <- v_names_str  
+
+# Calculate total costs and QALYs for each strategy 
+ for (i in 1:length(v_names_str)) {
+  v_total_qaly[i] <- eval_num(
+    df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff1[i])
+  v_total_cost[i] <- eval_num(
+    df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff2[i])
+ }
+
+# calculate vector of nmb
+v_nmb <- v_total_qaly * wtp - v_total_cost 
+          
 df_output <- data.frame(Strategy =  v_names_str,
                         Cost     =  v_total_cost,
                         Effect   =  v_total_qaly,

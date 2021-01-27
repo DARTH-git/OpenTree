@@ -154,19 +154,36 @@ create_OpenTree_df_markov <- function(df_input, df1){
   return(df_final)
 }
 
-evaluate_model <- function(input_string, params, treetype){
+evaluate_model <- function(input_string, params, treetype, n_payoffs){
   if (treetype == "decision") {
     if (any(class(input_string) == "data.frame")){
       y <- input_string
+      y <- input_string[, !names(y) == "name"]
       nr = nrow(input_string)
       nc = ncol(input_string)
+      df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs))
       for (r in 1:nr){
-        for (c in 2:3){
-          y[r,c] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,c])))), ")")
+        y[r,2] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,2])))), ")")
+        a <- as.character(input_string[r,3])
+        a1 <- unlist(strsplit(a, split=","))
+        a2 <- gsub("[)]", "", a1)
+        a2[1] <- paste0(strsplit(a2[1], split="")[[1]][-c(1:2)], collapse="")
+        a3 <- strsplit(a2, ";")
+        a4 <- data.frame(matrix(unlist(a3), nrow=length(a3), byrow=T))
+        a5 <- apply(a4, 2, function(x){toString(with(params, eval(x)))})
+        a6 <- as.data.frame(as.matrix(a5))
+        a7 <- apply(a6, 1, function(x){paste0("c(", x, ")")})
+        for (j in 1:n_payoffs) {
+        df_payoffs[r, j] <- paste0("c(", toString( with(params, eval(parse(text=a7[j])))), ")")
         }
       }
+      y <- y[,-3]
+      for (i in 1:n_payoffs) {
+        y[, paste0("v_payoff", i)] <- df_payoffs[,i]
+      }
     }
-  } else if (treetype == "markov"){
+  }
+   else if (treetype == "markov"){
     nr = nrow(input_string)
     nc = ncol(input_string)
     y <- matrix(0, nrow = nr, ncol = nc)
