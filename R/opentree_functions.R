@@ -13,6 +13,7 @@ if (!require(rstudioapi)) install.packages('rstudioapi'); library(rstudioapi)
 #' @export
 #'
 readOpenTreeModel <- function(treeName){
+  require(tidyverse)
   #fileName <- paste0("OpenTree_", treeName, ".json")
   fileName <- paste0(treeName, ".json")
   startlist <- jsonlite::fromJSON(fileName, flatten = TRUE)
