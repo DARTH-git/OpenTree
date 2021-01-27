@@ -1,9 +1,5 @@
 # OpenTree functions
 
-if (!require(tidyverse)) install.packages('tidyverse'); library(tidyverse)
-if (!require(jsonlite)) install.packages('jsonlite'); library(jsonlite)
-if (!require(rstudioapi)) install.packages('rstudioapi'); library(rstudioapi)
-
 #' readOpenTreeModel
 #' \code{readOpenTreeModel} reads and converts JSON file into R dataframe
 #'
@@ -14,6 +10,8 @@ if (!require(rstudioapi)) install.packages('rstudioapi'); library(rstudioapi)
 #'
 readOpenTreeModel <- function(treeName){
   require(tidyverse)
+  require(jsonlite)
+  require(rstudioapi)
   #fileName <- paste0("OpenTree_", treeName, ".json")
   fileName <- paste0(treeName, ".json")
   startlist <- jsonlite::fromJSON(fileName, flatten = TRUE)
