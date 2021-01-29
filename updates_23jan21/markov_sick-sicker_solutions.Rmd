@@ -169,8 +169,8 @@ Use OpenTree to build the Markov model and retrieve the transition probability m
 treeName <- "OpenTree_sick_sicker" # placeholder, after OpenTree is open, open model .json file
 opentree_df <- create_OpenTree_df(treeName)
 params <- list()
-m_P_notrt <- evaluate_string(opentree_df$P_str, params)
-v_s_init <- evaluate_string(opentree_df$p0_str$p0, params)
+m_P_notrt <- evaluate_model(opentree_df$P_str, params, treetype = "markov")
+v_s_init  <- as.numeric(opentree_df$p0_str$p0)
 
 # Check that transition probabilities are in [0, 1]
 check_transition_probability(m_P_notrt, verbose = TRUE)

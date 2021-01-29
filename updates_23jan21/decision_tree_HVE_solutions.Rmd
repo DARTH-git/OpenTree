@@ -88,7 +88,7 @@ p_load_gh("DARTH-git/dampack", "DARTH-git/darthtools", "DARTH-git/OpenTree")
 # 03 Define parameter input values
 
 ```{r}
-v_names_str    <- c("No Tx", "Tx All", "Biopsy")  # names of strategies
+v_names_str    <- c("Do not treat", "Treat", "Biopsy")  # names of strategies
 n_str          <- length(v_names_str)             # number of strategies
 wtp            <- 100000                          # willingness to pay threshold
 
@@ -198,7 +198,7 @@ v_nmb        <- v_total_qaly * wtp - v_total_cost
 names(v_total_qaly) <- v_names_str  # names for the elements of the total QALYs vector
 names(v_total_cost) <- v_names_str  # names for the elements of the total cost vector
 names(v_nmb)        <- v_names_str  # names for the elements of the nmb vector
-  
+
 df_output <- data.frame(Strategy =  v_names_str,
                         Cost     =  v_total_cost,
                         Effect   =  v_total_qaly,
@@ -208,7 +208,9 @@ df_output <- data.frame(Strategy =  v_names_str,
 df_output
 ```
 
-## Use OpenTree
+# 04.1 Use OpenTree to create and run decision tree model
+
+Store model parameter values into a list.
 
 ```{r}
 params = list(
@@ -234,31 +236,42 @@ params = list(
 )
 ```
 
-Draw/ open decision tree
+Create or open decision tree. 
+
+The function `create_tree()` creates a blank tree and the function `open_tree()` opens an existing decision tree. 
+
+*IMPORTANT*: since `create_tree()` always creates blank new tree, do not use it to access or modify an existing tree, or else the tree will get erased. Always use `open_tree()` to open and modify existing trees.
+
+Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located. 
 
 ```{r}
 # create_tree(file_name = "HVE", dir_name = getwd())
 open_tree(file_name = "HVE", dir_name = getwd())
 ```
 
-Evaluate outcomes of decision tree
+Extract probability weights and outcomes of the decision tree.
 
 ```{r, warning = F}
 # define a model name
-treeName <- "HVE" # placeholdername for model ... use the File commands on OpenTree to create NEW, Open or Save OpenTrees.
-# 2. convert the tree into a summary dataframe
+treeName <- "HVE" 
+# convert the tree model into a summary dataframe
 opentree_df <- create_OpenTree_df(treeName)
-
+# extract the probability weights and outcomes  
 df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision", n_payoffs = 2)
+df_tree_results$`Do not treat`
+```
+
+Compute total cost and QALYs.
+
+```{r}
+# vector of total cost and QALYs
 v_total_qaly <- v_total_cost <- vector(mode = "numeric", length = length(v_names_str))
 names(v_total_qaly) <- names(v_total_cost) <- v_names_str  
 
 # Calculate total costs and QALYs for each strategy 
  for (i in 1:length(v_names_str)) {
-  v_total_qaly[i] <- eval_num(
-    df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff1[i])
-  v_total_cost[i] <- eval_num(
-    df_tree_results$v_prob[i]) %*% eval_num(df_tree_results$v_payoff2[i])
+  v_total_qaly[i] <- df_tree_results[[i]]$prob %*% df_tree_results[[i]]$payoff1
+  v_total_cost[i] <- df_tree_results[[i]]$prob %*% df_tree_results[[i]]$payoff2
  }
 
 # calculate vector of nmb
