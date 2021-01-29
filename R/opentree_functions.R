@@ -80,7 +80,7 @@ create_OpenTree_df_decision <- function(df_input, df1){
     mutate(l_probability = paste0("(",lead(probability),")")) %>%
     filter(type == "chance") %>%
     group_by(branch) %>%
-    summarize(prob_chain = paste(l_probability, collapse = "*"))
+    summarize(prob_chain = paste(l_probability, collapse = " * "))
 
   df2 <- df_input %>%
     filter(type == "terminal") %>%
@@ -103,8 +103,8 @@ create_OpenTree_df_decision <- function(df_input, df1){
   df_final <- df_combined %>%
     #mutate(ev = paste("prod(", prob_chain, ") *", payoff, sep = "")) %>%
     group_by(decision_id) %>%
-    summarize(v_prob = paste0("c(", paste(prob_chain, collapse = ","), ")"),
-              v_payoff = paste0("c(", paste(payoff, collapse = ","), ")")) %>%
+    summarize(v_prob = paste0("c(", paste(prob_chain, collapse = ", "), ")"),
+              v_payoff = paste0("c(", paste(payoff, collapse = ", "), ")")) %>%
     inner_join(dec_names)
   return(df_final)
 }
