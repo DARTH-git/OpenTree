@@ -75,7 +75,6 @@ create_OpenTree_df <- function(treeName){
 #' @export
 #'
 create_OpenTree_df_decision <- function(df_input, df1){
-
   df1 <- df_input %>%
     mutate(l_probability = paste0("(",lead(probability),")")) %>%
     filter(type == "chance") %>%
@@ -227,14 +226,27 @@ evaluate_model <- function(input_string, params = list(), n_payoffs){
     y <- result_list
   }
    else {
-    nr = nrow(input_string)
-    nc = ncol(input_string)
+    result_list <- list() # empty list to store output: transition prob matrix and initial state vector
+    # transition prob matrx
+    nr = nrow(input_string$P_str)
+    nc = ncol(input_string$P_str)
     y <- matrix(0, nrow = nr, ncol = nc)
     for (r in 1:nr){
       for (c in 1:nc){
-        y[r,c] <- with(params, eval(parse(text=input_string[r,c])))
+        y[r,c] <- with(params, eval(parse(text=input_string$P_str[r,c])))
       }
     }
+    # Check that transition probabilities are in [0, 1]
+    check_transition_probability(y, verbose = TRUE)
+    # Check that all rows sum to 1
+    check_sum_of_transition_array(y, n_states = n_states, n_cycles = n_t, verbose = TRUE)
+
+    # initial state vector
+    v_s_init <- as.numeric(input_string$p0_str$p0)
+    result_list[[1]] <- y
+    result_list[[2]] <- v_s_init
+    names(result_list) <- c("m_P", "v_s_init")
+    y <- result_list
   }
   return(y)
 }
