@@ -186,10 +186,9 @@ create_OpenTree_df_markov <- function(df_input, df1){
 #'
 #' @export
 #'
-evaluate_model <- function(input_string, params, treetype, n_payoffs){
-  v_names_str1 <- input_string$name
-  if (treetype == "decision") {
-    if (any(class(input_string) == "data.frame")){
+evaluate_model <- function(input_string, params = list(), n_payoffs){
+  if (names(input_string)[1] != "P_str") {
+    v_names_str1 <- input_string$name
       y <- input_string
       y <- input_string[, !names(y) == "name"]
       nr = nrow(input_string)
@@ -214,7 +213,6 @@ evaluate_model <- function(input_string, params, treetype, n_payoffs){
       for (i in 1:n_payoffs) {
         y[, paste0("v_payoff", i)] <- df_payoffs[,i]
       }
-    }
     result_list <- list()
     for (i in 1:length(v_names_str1)) {
       df_results <- data.frame(path = 1:length(eval_num(y$v_prob[i])),
@@ -228,7 +226,7 @@ evaluate_model <- function(input_string, params, treetype, n_payoffs){
     }
     y <- result_list
   }
-   else if (treetype == "markov"){
+   else {
     nr = nrow(input_string)
     nc = ncol(input_string)
     y <- matrix(0, nrow = nr, ncol = nc)
