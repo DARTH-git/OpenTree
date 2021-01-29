@@ -148,7 +148,7 @@ create_OpenTree_df_markov <- function(df_input, df1){
   # and collapse branches with similar starts and end states
   df3 <- full_join(df1, df2_5) %>%
     mutate(prob_chain = if_else(is.na(prob_chain), "1",
-                                paste("prod(", prob_chain, ")", sep = ""))) %>%
+                                paste(prob_chain, sep = ""))) %>%
     group_by(state1_id, state2_id) %>%
     summarize(p0 = max(p0),
               prob_chain = paste(prob_chain, collapse = "+"))
