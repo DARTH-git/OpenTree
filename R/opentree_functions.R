@@ -174,6 +174,18 @@ create_OpenTree_df_markov <- function(df_input, df1){
   return(df_final)
 }
 
+#' eval_num
+#' \code{eval_num} extracts the numeric component of the evaluated model output
+#'
+#' @param x a character string of numbers
+#' @return a vector of numbers
+#'
+#' @export
+#'
+eval_num <-function(x) {
+  eval(parse(text=x))
+}
+
 #' evaluate_model
 #' \code{evaluate_model} evaluates the decision model
 #'
@@ -181,37 +193,39 @@ create_OpenTree_df_markov <- function(df_input, df1){
 #' @param params list of model input parameters
 #' @param treetype type of decision tree (decision or markov)
 #' @param n_payoffs number of payoffs
+#' @param backend whether to return the backbone of the tree dataframe
 #' @return evaluated model output
 #'
 #' @export
 #'
-evaluate_model <- function(input_string, params = list(), n_payoffs){
+evaluate_model <- function(treeName, params = list(), n_payoffs, backend = FALSE){
+  input_string <- create_OpenTree_df(treeName)
   if (names(input_string)[1] != "P_str") {
     v_names_str1 <- input_string$name
-      y <- input_string
-      y <- input_string[, !names(y) == "name"]
-      nr = nrow(input_string)
-      nc = ncol(input_string)
-      df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs))
-      for (r in 1:nr){
-        y[r,2] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,2])))), ")")
-        a <- as.character(input_string[r,3])
-        a1 <- unlist(strsplit(a, split=","))
-        a2 <- gsub("[)]", "", a1)
-        a2[1] <- paste0(strsplit(a2[1], split="")[[1]][-c(1:2)], collapse="")
-        a3 <- strsplit(a2, ";")
-        a4 <- data.frame(matrix(unlist(a3), nrow=length(a3), byrow=T))
-        a5 <- apply(a4, 2, function(x){toString(with(params, eval(x)))})
-        a6 <- as.data.frame(as.matrix(a5))
-        a7 <- apply(a6, 1, function(x){paste0("c(", x, ")")})
-        for (j in 1:n_payoffs) {
+    y <- input_string
+    y <- input_string[, !names(y) == "name"]
+    nr = nrow(input_string)
+    nc = ncol(input_string)
+    df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs))
+    for (r in 1:nr){
+      y[r,2] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,2])))), ")")
+      a <- as.character(input_string[r,3])
+      a1 <- unlist(strsplit(a, split=","))
+      a2 <- gsub("[)]", "", a1)
+      a2[1] <- paste0(strsplit(a2[1], split="")[[1]][-c(1:2)], collapse="")
+      a3 <- strsplit(a2, ";")
+      a4 <- data.frame(matrix(unlist(a3), nrow=length(a3), byrow=T))
+      a5 <- apply(a4, 2, function(x){toString(with(params, eval(x)))})
+      a6 <- as.data.frame(as.matrix(a5))
+      a7 <- apply(a6, 1, function(x){paste0("c(", x, ")")})
+      for (j in 1:n_payoffs) {
         df_payoffs[r, j] <- paste0("c(", toString( with(params, eval(parse(text=a7[j])))), ")")
-        }
       }
-      y <- y[,-3]
-      for (i in 1:n_payoffs) {
-        y[, paste0("v_payoff", i)] <- df_payoffs[,i]
-      }
+    }
+    y <- y[,-3]
+    for (i in 1:n_payoffs) {
+      y[, paste0("v_payoff", i)] <- df_payoffs[,i]
+    }
     result_list <- list()
     for (i in 1:length(v_names_str1)) {
       df_results <- data.frame(path = 1:length(eval_num(y$v_prob[i])),
@@ -225,7 +239,7 @@ evaluate_model <- function(input_string, params = list(), n_payoffs){
     }
     y <- result_list
   }
-   else {
+  else {
     result_list <- list() # empty list to store output: transition prob matrix and initial state vector
     # transition prob matrx
     nr = nrow(input_string$P_str)
@@ -248,17 +262,8 @@ evaluate_model <- function(input_string, params = list(), n_payoffs){
     names(result_list) <- c("m_P", "v_s_init")
     y <- result_list
   }
-  return(y)
-}
-
-#' eval_num
-#' \code{eval_num} extracts the numeric component of the evaluated model output
-#'
-#' @param x a character string of numbers
-#' @return a vector of numbers
-#'
-#' @export
-#'
-eval_num <-function(x) {
-  eval(parse(text=x))
+  if (backend == TRUE) {
+    y1 <- list(tree_output = y, tree_backbone = input_string)
+    return(y1)
+  } else return(y)
 }
