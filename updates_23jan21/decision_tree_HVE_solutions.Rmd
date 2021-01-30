@@ -105,6 +105,7 @@ c_VE           <- 1200   # cost of viral encephalitis care without complications
 c_VE_comp      <- 9000   # cost of viral encephalitis care with complications
 c_tx           <- 9500   # cost of treatment
 c_biopsy       <- 25000  # cost of brain biopsy
+c_death_biopsy <- 0      # cost of death from biopsy
 
 # QALYs
 q_VE           <- 20     # remaining QALYs for those without VE-related complications
@@ -210,56 +211,25 @@ df_output
 
 # 04.1 Use OpenTree to create and run decision tree model
 
-Store model parameter values into a list.
-
-```{r}
-params = list(
-  # Probabilities
-  p_HVE          <- 0.52,   # prevalence of HVE
-  p_HVE_comp     <- 0.71,   # complications with untreated HVE
-  p_OVE_comp     <- 0.01,   # complications with untreated OVE
-  p_HVE_comp_tx  <- 0.36,   # complications with treated HVE
-  p_OVE_comp_tx  <- 0.20,   # complications with treated OVE
-  p_biopsy_death <- 0.005,  # probability of death due to biopsy
-
-  # Costs
-  c_VE           <- 1200,   # cost of viral encephalitis care without complications
-  c_VE_comp      <- 9000,   # cost of viral encephalitis care with complications
-  c_tx           <- 9500,   # cost of treatment
-  c_biopsy       <- 25000,  # cost of brain biopsy
-
-  # QALYs
-  q_VE           <- 20,     # remaining QALYs for those without VE-related complications
-  q_VE_comp      <- 19,     # remaining QALYs for those with VE-related complications
-  q_loss_biopsy  <- 0.01,   # one-time  QALY loss due to brain biopsy
-  q_death_biopsy <- 0       # remaining QALYs for those who died during biopsy
-)
-```
-
 Create or open decision tree. 
 
 The function `create_tree()` creates a blank tree and the function `open_tree()` opens an existing decision tree. 
 
-*IMPORTANT*: since `create_tree()` always creates blank new tree, do not use it to access or modify an existing tree, or else the tree will get erased. Always use `open_tree()` to open and modify existing trees.
-
-Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located. 
-
 ```{r}
-# create_tree(file_name = "HVE", dir_name = getwd())
-open_tree(file_name = "HVE", dir_name = getwd())
+# create_tree(file_name = "Helloworld", dir_name = getwd())
+open_tree(file_name = "HVE1", dir_name = getwd())
 ```
 
 Extract probability weights and outcomes of the decision tree.
 
 ```{r, warning = F}
-# define a model name
-treeName <- "HVE" 
-# convert the tree model into a summary dataframe
-opentree_df <- create_OpenTree_df(treeName)
 # extract the probability weights and outcomes  
-df_tree_results <- evaluate_model(opentree_df, params, treetype = "decision", n_payoffs = 2)
-df_tree_results$`Do not treat`
+df_tree <- evaluate_model("HVE1", n_payoffs = 2)
 ```
+
+*IMPORTANT*: since `create_tree()` always creates blank new tree, do not use it to access or modify an existing tree, or else the tree will get erased. Always use `open_tree()` to open and modify existing trees.
+
+Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located. 
 
 Compute total cost and QALYs.
 
@@ -270,8 +240,8 @@ names(v_total_qaly) <- names(v_total_cost) <- v_names_str
 
 # Calculate total costs and QALYs for each strategy 
  for (i in 1:length(v_names_str)) {
-  v_total_qaly[i] <- df_tree_results[[i]]$prob %*% df_tree_results[[i]]$payoff1
-  v_total_cost[i] <- df_tree_results[[i]]$prob %*% df_tree_results[[i]]$payoff2
+  v_total_qaly[i] <- df_tree[[i]]$prob %*% df_tree[[i]]$payoff1
+  v_total_cost[i] <- df_tree[[i]]$prob %*% df_tree[[i]]$payoff2
  }
 
 # calculate vector of nmb

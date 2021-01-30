@@ -5,16 +5,18 @@
 \title{evaluate_model
 \code{evaluate_model} evaluates the decision model}
 \usage{
-evaluate_model(input_string, params, treetype, n_payoffs)
+evaluate_model(treeName, params = list(), n_payoffs, backend = FALSE)
 }
 \arguments{
-\item{input_string}{OpenTree-compatible dataframe}
-
 \item{params}{list of model input parameters}
 
-\item{treetype}{type of decision tree (decision or markov)}
-
 \item{n_payoffs}{number of payoffs}
+
+\item{backend}{whether to return the backbone of the tree dataframe}
+
+\item{input_string}{OpenTree-compatible dataframe}
+
+\item{treetype}{type of decision tree (decision or markov)}
 }
 \value{
 evaluated model output

@@ -85,6 +85,34 @@ create_OpenTree_df_decision <- function(df_input, df1){
     filter(type == "terminal") %>%
     select(branch, payoff)
 
+  df3 <- df_input %>%
+    # filter(type == "terminal") %>%
+    select(branch, payoff)
+
+  df3 <- df3 %>%
+    filter(payoff != "")
+
+  df4 <- df3 %>% anti_join(df2)
+
+  for (i in 1:nrow(df2)) {
+    if (df2$branch[i] %in% c(unique(df4$branch))) {
+      splitt_df2 <- unlist(strsplit(df2$payoff[i], ";"))
+      splitt_df4 <- df4 %>% filter(branch == i)
+      for (j in 1:nrow(splitt_df4)) {
+        splitt_df4_j_payoff <- splitt_df4$payoff[j]
+        splitt_df4_j_payoff1 <- unlist(strsplit(splitt_df4_j_payoff, ";"))
+        for (k in 1:length(splitt_df4_j_payoff1)) {
+          if (length(grep("c_", splitt_df4_j_payoff1[k])) > 0) { # if detects c_
+            splitt_df2[2] <- paste0(splitt_df2[2], " + ", splitt_df4_j_payoff1[k])
+          } else if (length(grep("q_", splitt_df4_j_payoff1[k])) > 0) { # if detects q_
+            splitt_df2[1] <- paste0(splitt_df2[1], " + ", splitt_df4_j_payoff1[k])
+          }
+        }
+      }
+      df2$payoff[i] <- paste0(splitt_df2, collapse = ";")
+    }
+  }
+
   dec_names <- df_input %>%
     filter(tree_lvl == 1) %>%
     distinct(name) %>%
