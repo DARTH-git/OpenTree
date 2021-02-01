@@ -21,7 +21,7 @@ ui <- htmlTemplate("www/OpenTree.html",
         #btn1_checker = actionButton("chck1_file", "Check for file"),
         #Data Table
         #data_table = tableOutput("table1"),
-
+        text_title = textOutput("title"),
         # text output
         text_output = tableOutput("table2")
 
@@ -30,6 +30,10 @@ ui <- htmlTemplate("www/OpenTree.html",
 # Server ------------------------------------------------------------------
 
 server <-  function(input, output, session){
+    #File Name text
+    output$title <- renderText({
+        file_name
+    })
     # First Message
     message <- paste0("OpenTree will save your changes to the tree structure in real-time to ", path_file)
 

@@ -32,6 +32,8 @@ create_tree <- function(file_name, dir_name) {
   path_file <- paste0(dir_name,"/", file_name, ".json")
   assign("path_file", path_file, envir = .GlobalEnv)
   assign("dir_name", dir_name, envir = .GlobalEnv)
+  assign("file_name", file_name, envir = .GlobalEnv)
+
 
   # Check path of appDir  ---------------------------------------------------
   if (appDir == "") {
