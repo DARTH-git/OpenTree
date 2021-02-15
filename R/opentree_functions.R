@@ -234,7 +234,8 @@ evaluate_model <- function(treeName, params = list(), n_payoffs, backend = FALSE
     y <- input_string[, !names(y) == "name"]
     nr = nrow(input_string)
     nc = ncol(input_string)
-    df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs))
+    df_payoffs <- as.data.frame(matrix("", nrow = nr, nc = n_payoffs), 
+      stringsAsFactors = FALSE)
     for (r in 1:nr){
       y[r,2] <- paste0("c(", toString( with(params, eval(parse(text=input_string[r,2])))), ")")
       a <- as.character(input_string[r,3])
