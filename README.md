@@ -6,4 +6,4 @@ This is the test launch of the OpenTree package
 </p> 
 
 
-[![Watch the video](https://player.vimeo.com/video/646960252?h=da5758ec62)]
+video:https://vimeo.com/646960252/da5758ec62
