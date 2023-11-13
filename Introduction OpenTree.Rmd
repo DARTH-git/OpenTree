@@ -1,0 +1,127 @@
+---
+title: "Introduction OpenTree - Instruction file"
+author: "DARTH workgroup"
+date: "11/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Make sure you have a recent version from R
+```{r}
+getRversion()
+```
+
+You can check the newest version on the website from R
+https://www.r-project.org
+
+# Download OpenTree
+OpenTree is currently only available via GitHub
+To install a package from GitHub you can use install_github
+With the repository name in it
+```{r}
+# help packages
+if (!require('pacman')) install.packages('pacman'); library(pacman) # use this package to conveniently install other packages
+# load (install if required) packages from CRAN
+p_load("devtools", "scales", "ellipse", "lazyeval", "igraph",  "ggraph", "reshape2", "knitr", "stringr", "jsonlite", "rstudioapi", "tidyverse", "dampack")                                               
+
+install_github("DARTH-git/OpenTree", force = TRUE) # (Un)comment if there is a newer version
+```
+
+# After you are 
+```{r}
+p_load_gh("DARTH-git/OpenTree")
+```
+
+## Create or open decision tree. 
+
+The function `create_tree()` creates a blank tree and the function `open_tree()` opens an existing decision tree. 
+
+*IMPORTANT*: since `create_tree()` always creates blank new tree, do not use it to access or modify an existing tree, or else the tree will get erased. Always use `open_tree()` to open and modify existing trees.
+
+Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located. 
+
+```{r}
+create_tree(file_name = "DemoTree", dir_name = getwd())
+open_tree(file_name = "DemoTree", dir_name = getwd())
+```
+
+
+
+# Define parameter input values
+
+```{r}
+v_names_str    <- c("Intervention", "No intervention")  # names of strategies
+n_str          <- length(v_names_str)                   # number of strategies
+wtp            <- 100000                                # willingness to pay threshold
+
+# Probabilities
+p_S       <- 0.52   # probability of getting sick
+p_S_int   <- 0.40    # probability of getting sick under intervention
+
+
+# Costs
+c_S       <- 1200   # cost of viral encephalitis care without complications
+c_H       <- 9000   # cost of viral encephalitis care with complications
+
+# LE
+le_S      <- 7      # remaining life expectancy for sick people
+le_H      <- 10     # remaining life expectancy for healthy people
+
+```
+
+
+
+Extract probability weights and outcomes of the decision tree.
+
+```{r, warning = F}
+# extract the probability weights and outcomes  
+df_tree <- evaluate_model("DemoTree", n_payoffs = 2)
+```
+
+
+
+
+
+Compute total cost and QALYs.
+
+```{r}
+# vector of total cost and QALYs
+v_total_qaly <- v_total_cost <- vector(mode = "numeric", length = n_str)
+
+# Calculate total costs and QALYs for each strategy 
+ for (i in 1:n_str) {
+  v_total_qaly[i] <- df_tree[[i]]$prob %*% df_tree[[i]]$payoff1
+  v_total_cost[i] <- df_tree[[i]]$prob %*% df_tree[[i]]$payoff2
+ }
+
+# calculate vector of nmb
+v_nmb <- v_total_qaly * wtp - v_total_cost 
+          
+df_output <- data.frame(Strategy =  v_names_str,
+                        Cost     =  v_total_cost,
+                        Effect   =  v_total_qaly,
+                        NMB      =  v_nmb)
+
+# model output
+df_output
+```
+
+## 05 Cost-Effectiveness Analysis
+
+```{r}
+# create the transition probability matrix for NO treatment
+decision_tree_demo_cea  <- calculate_icers(cost       = df_output$Cost,
+                                          effect      = df_output$Effect,
+                                          strategies  = df_output$Strategy)
+decision_tree_demo_cea
+```
+
+## 05.1 Plot frontier of Decision Tree
+
+```{r}
+plot(decision_tree_demo_cea, effect_units = "QALYs", label="all")
+```
+
