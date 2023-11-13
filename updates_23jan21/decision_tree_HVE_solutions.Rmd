@@ -10,52 +10,39 @@ self_contained: no
 
 Developed by the Decision Analysis in R for Technologies in Health (DARTH) workgroup:
 
-Fernando Alarid-Escudero, PhD (1) 
+Fernando Alarid-Escudero, PhD (1)
 
-Eva A. Enns, MS, PhD (2)	
+Eva A. Enns, MS, PhD (2)
 
 M.G. Myriam Hunink, MD, PhD (3,4)
 
-Hawre J. Jalal, MD, PhD (5) 
+Hawre J. Jalal, MD, PhD (5)
 
-Eline M. Krijkamp, MSc (3)	
+Eline M. Krijkamp, MSc (3)
 
 Petros Pechlivanoglou, PhD (6,7)
 
 Alan Yang, MSc (7)
 
-In collaboration of: 		
+In collaboration of:
 
-1. Drug Policy Program, Center for Research and Teaching in Economics (CIDE) - CONACyT, 
-   Aguascalientes, Mexico
-2. University of Minnesota School of Public Health, Minneapolis, MN, USA
-3. Erasmus MC, Rotterdam, The Netherlands
-4. Harvard T.H. Chan School of Public Health, Boston, USA
-5. University of Pittsburgh Graduate School of Public Health, Pittsburgh, PA, USA
-6. University of Toronto, Toronto ON, Canada
-7. The Hospital for Sick Children, Toronto ON, Canada
+1.  Drug Policy Program, Center for Research and Teaching in Economics (CIDE) - CONACyT, Aguascalientes, Mexico
+2.  University of Minnesota School of Public Health, Minneapolis, MN, USA
+3.  Erasmus MC, Rotterdam, The Netherlands
+4.  Harvard T.H. Chan School of Public Health, Boston, USA
+5.  University of Pittsburgh Graduate School of Public Health, Pittsburgh, PA, USA
+6.  University of Toronto, Toronto ON, Canada
+7.  The Hospital for Sick Children, Toronto ON, Canada
 
 Please cite our publications when using this code:
- 
-- Jalal H, Pechlivanoglou P, Krijkamp E, Alarid-Escudero F, Enns E, Hunink MG. 
-An Overview of R in Health Decision Sciences. Med Decis Making. 2017; 37(3): 735-746. 
-https://journals.sagepub.com/doi/abs/10.1177/0272989X16686559
- 
-- Krijkamp EM, Alarid-Escudero F, Enns EA, Jalal HJ, Hunink MGM, Pechlivanoglou P. 
-Microsimulation modeling for health decision sciences using R: A tutorial. 
-Med Decis Making. 2018;38(3):400–22. 
-https://journals.sagepub.com/doi/abs/10.1177/0272989X18754513
- 
-- Krijkamp EM, Alarid-Escudero F, Enns E, Pechlivanoglou P, Hunink MM, Jalal H. 
-A Multidimensional Array Representation of State-Transition Model Dynamics. 
-Med Decis Making. 2020 Online first. https://doi.org/10.1177/0272989X19893973
 
-Copyright 2017, THE HOSPITAL FOR SICK CHILDREN AND THE COLLABORATING INSTITUTIONS. 
-All rights reserved in Canada, the United States and worldwide. Copyright, 
-trademarks, trade names and any and all associated intellectual property are 
-exclusively owned by THE HOSPITAL FOR Sick CHILDREN and the collaborating 
-institutions. These materials may be used, reproduced, modified, distributed 
-and adapted with proper attribution.
+-   Jalal H, Pechlivanoglou P, Krijkamp E, Alarid-Escudero F, Enns E, Hunink MG. An Overview of R in Health Decision Sciences. Med Decis Making. 2017; 37(3): 735-746. <https://journals.sagepub.com/doi/abs/10.1177/0272989X16686559>
+
+-   Krijkamp EM, Alarid-Escudero F, Enns EA, Jalal HJ, Hunink MGM, Pechlivanoglou P. Microsimulation modeling for health decision sciences using R: A tutorial. Med Decis Making. 2018;38(3):400--22. <https://journals.sagepub.com/doi/abs/10.1177/0272989X18754513>
+
+-   Krijkamp EM, Alarid-Escudero F, Enns E, Pechlivanoglou P, Hunink MM, Jalal H. A Multidimensional Array Representation of State-Transition Model Dynamics. Med Decis Making. 2020 Online first. <https://doi.org/10.1177/0272989X19893973>
+
+Copyright 2017, THE HOSPITAL FOR SICK CHILDREN AND THE COLLABORATING INSTITUTIONS. All rights reserved in Canada, the United States and worldwide. Copyright, trademarks, trade names and any and all associated intellectual property are exclusively owned by THE HOSPITAL FOR Sick CHILDREN and the collaborating institutions. These materials may be used, reproduced, modified, distributed and adapted with proper attribution.
 
 \newpage
 
@@ -211,12 +198,13 @@ df_output
 
 # 04.1 Use OpenTree to create and run decision tree model
 
-Create or open decision tree. 
+Create or open decision tree.
 
-The function `create_tree()` creates a blank tree and the function `open_tree()` opens an existing decision tree. 
+The function `create_tree()` creates a blank tree and the function `open_tree()` opens an existing decision tree.
 
 ```{r}
 # create_tree(file_name = "Helloworld", dir_name = getwd())
+#create_tree(file_name = "test", dir_name = getwd())
 open_tree(file_name = "HVE1", dir_name = getwd())
 ```
 
@@ -229,7 +217,7 @@ df_tree <- evaluate_model("HVE1", n_payoffs = 2)
 
 *IMPORTANT*: since `create_tree()` always creates blank new tree, do not use it to access or modify an existing tree, or else the tree will get erased. Always use `open_tree()` to open and modify existing trees.
 
-Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located. 
+Any changes made to the tree in OpenTree are automatically saved as a `.json` file to the working directory. If you are running it in an R script, the `.json` file will be saved to the path on your machine specified in `dir_name`. If you are running it in an R markdown document, the `.json` file will be saved to the path where the R markdown document is located.
 
 Compute total cost and QALYs.
 
@@ -271,5 +259,3 @@ decision_tree_HVE_cea
 ```{r}
 plot(decision_tree_HVE_cea, effect_units = "QALYs", label="all")
 ```
-
-
